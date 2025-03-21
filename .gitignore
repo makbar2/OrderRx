@@ -1,0 +1,28 @@
+API/bin# Ignore node_modules directory
+Client/node_modules/
+API/bin
+API/obj
+API/appsettings.json
+API/Migrations
+# Ignore log files
+*.log
+
+# Ignore environment variable files
+.env
+
+# Ignore build directories
+dist/
+build/
+
+# Ignore temporary files
+*.tmp
+*.swp
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+
