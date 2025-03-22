@@ -6,6 +6,7 @@ public class DataContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Medication> Medications { get; set; }
     public DbSet<GpPractice> GpPractices { get; set; }
+    public DbSet<PatientMedication> PatientMedications { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

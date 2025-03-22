@@ -11,8 +11,6 @@ namespace API.Services.PatientService
         
         Task<List<Patient>> GetByDob(DateTime dob);
 
-        Task<List<Patient>> GetRecent();
-
         Task<bool> Delete(int id);
     }
 

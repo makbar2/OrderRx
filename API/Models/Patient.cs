@@ -18,7 +18,8 @@ public class Patient
     [Required]
     public string Postcode {get; set;}
     public int GpPracticeId { get; set; } // FK to practice
+    public string Notes {get;set;}
     public GpPractice Gp {get;set;}
-    public List<Medication> Medications { get; set; }
+
 
 }
