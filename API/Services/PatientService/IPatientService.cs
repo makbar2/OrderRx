@@ -1,17 +1,14 @@
 
-namespace API.Services.PatientService
+public interface IPatientService
 {
-    public interface IPatientService
-    {
-        Task<IEnumerable<Patient>> Get();
-        Task<Patient> GetById(int id);
-        Task<Patient> Add(Patient patient);
-        Task<Patient> Update(Patient patient);
-        Task<List<Patient>> GetBySurname(string surname);
+    Task<IEnumerable<Patient>> Get();
+    Task<Patient> GetById(int id);
+    Task<Patient> Add(Patient patient);
+    Task<Patient> Update(Patient patient);
+    Task<List<Patient>> GetBySurname(string surname);
         
-        Task<List<Patient>> GetByDob(DateTime dob);
+    Task<List<Patient>> GetByDob(DateTime dob);
 
-        Task<bool> Delete(int id);
-    }
-
+    Task<bool> Delete(int id);
 }
+

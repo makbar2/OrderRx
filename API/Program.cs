@@ -1,4 +1,4 @@
-using API.Services.PatientService;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,12 +20,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-
 app.MapGet("/patients/{id}", async (int id, IPatientService _patientService) =>
 {
     try{
@@ -37,24 +31,20 @@ app.MapGet("/patients/{id}", async (int id, IPatientService _patientService) =>
     }
 });
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+app.MapGet("/patients/",async (string surname, IPatientService _patientService) =>{
+    try{
+        if(surname.Length < 3)
+        {
+            throw new Exception("Please provide more than two characters");
+        }
+        var patients = await _patientService.GetBySurname(surname);
+        return Results.Ok(patients);
+    }catch(Exception error)
+    {
+        return Results.BadRequest(new {message = error.Message});
+    }
+});
+
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
