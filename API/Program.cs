@@ -6,6 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IPatientService,PatientService>();
+builder.Services.AddScoped<IGpPracticeService,GpPracticeService>();
+builder.Services.AddScoped<IMedicationService,MedicationService>();
+
 
 
 builder.Services.AddDbContext<DataContext>();
@@ -44,6 +47,7 @@ app.MapGet("/patients/",async (string surname, IPatientService _patientService) 
         return Results.BadRequest(new {message = error.Message});
     }
 });
+
 
 
 app.Run();
