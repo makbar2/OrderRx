@@ -9,18 +9,19 @@ import {
     TableRow,
   } from "@/components/ui/table";  
 import { Button } from "./ui/button";
+import { Link } from "react-router-dom"
 export default function PatientTable({patients,mode=0}: {patients:Patient[],mode:number})
 {
     return (
         <>
-            <Table>
+            <Table className="table-fixed">
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Patient Name</TableHead>
-                        <TableHead>Date Of Birth</TableHead>
-                        <TableHead>Address</TableHead>
-                        <TableHead>Post Code</TableHead>
-                        <TableHead></TableHead>
+                        <TableHead className="min-w-240px">Patient Name</TableHead>
+                        <TableHead className="min-w-240px">Date Of Birth</TableHead>
+                        <TableHead className="min-w-240px">Address</TableHead>
+                        <TableHead className="min-w-240px">Post Code</TableHead>
+                        <TableHead className="min-w-240px"></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -31,7 +32,7 @@ export default function PatientTable({patients,mode=0}: {patients:Patient[],mode
                             <TableCell>{patient.address}</TableCell>
                             <TableCell>{patient.postcode}</TableCell>
                             <TableCell>
-                                <Button>Edit</Button>
+                                <Button className="" ><Link to={`/patient/${patient.id}`} >Edit</Link></Button>
                             </TableCell>
                         </TableRow>
                     ))}
