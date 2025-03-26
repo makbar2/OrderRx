@@ -68,17 +68,22 @@ public class PatientService : IPatientService
    /// <returns>patient object that was passed in</returns>
     public async Task<Patient> UpdateDetails(Patient patient)
     {
-        var existingPatient = await _context.Patients.FirstOrDefaultAsync(p => p.Id == gp.Id) ??
+        var existingPatient = await _context.Patients.FirstOrDefaultAsync(p => p.Id == patient.Id) ??
             throw new Exception($"Unable to find a patient to update");
-        existingPatient.Name = patient.FirstName;
-        existingPatient.Name = patient.Surname;
-        existingPatient.Name = patient.DOB;
-        existingPatient.Name = patient.Email;
-        existingPatient.Name = patient.PhoneNumber;
-        existingPatient.Name = patient.Address;
-        existingPatient.Name = patient.Postcode;
+        existingPatient.FirstName = patient.FirstName;
+        existingPatient.Surname = patient.Surname;
+        existingPatient.DOB = patient.DOB;
+        existingPatient.Email = patient.Email;
+        existingPatient.PhoneNumber = patient.PhoneNumber;
+        existingPatient.Address = patient.Address;
+        existingPatient.Postcode = patient.Postcode;
         existingPatient.Address = patient.Address;
         await _context.SaveChangesAsync();
         return existingPatient;
+    }
+
+    public Task<Patient> Update(Patient patient)
+    {
+        throw new NotImplementedException();
     }
 }
