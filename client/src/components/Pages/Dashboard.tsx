@@ -1,10 +1,10 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { BrowserRouter, Route, Routes } from "react-router";
-import OrderToday from "./OrderToday";
-import PatientSearch from "./PatientSearch";
+import OrderToday from "../OrderToday";
+import PatientSearch from "./PatientSearch/PatientSearch";
 import GpSurgeries from "./GpSurgeries";
-import PatientForm from "./PatientForm";
+import PatientForm from "../PatientForm";
 import { useState } from "react";
 export default function Dashboard()
 {

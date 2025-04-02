@@ -1,4 +1,4 @@
-import Patient from "../Interfaces/Patient";
+import Patient from "../../../Interfaces/Patient";
 import {
     Table,
     TableBody,
@@ -8,7 +8,7 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table";  
-import { Button } from "./ui/button";
+import { Button } from "../../ui/button";
 import { Link } from "react-router-dom"
 export default function PatientTable({patients,mode=0}: {patients:Patient[],mode:number})
 {

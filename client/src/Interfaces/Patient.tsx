@@ -1,5 +1,5 @@
 import GpPractice from "./GpPractice";
-import PatientMedication from "./PatientMedication";
+import Medication from "./Medication";
 export default interface Patient 
 {
   id: number; // PK
@@ -12,7 +12,7 @@ export default interface Patient
   postcode: string;
   notes?: string | null; // Optional and nullable
   gp?: GpPractice; // Assuming you have a corresponding GpPractice interface in TypeScript
-  patientMedication?: PatientMedication[] | null; // List of medications, nullable
+  patientMedication?: Medication[] | null; // List of medications, nullable
   collectionDate?: string | null; // DateTime?, should be string or null
   orderDate?: string | null; // DateTime?, should be string or null
   orderFrequency?: number | null; // Nullable number

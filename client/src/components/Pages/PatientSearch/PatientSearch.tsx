@@ -1,4 +1,4 @@
-import Patient from "../Interfaces/Patient";
+import Patient from "../../../Interfaces/Patient";
 import { useState } from "react";
 import PatientSearchBar from "./PatientSearchBar";
 import PatientTable from "./PatientTable";

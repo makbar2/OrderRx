@@ -3,8 +3,12 @@ import Patient from "@/Interfaces/Patient";
 import { useParams } from "react-router-dom";
 import { Input } from "./ui/input";
 import { DatePicker } from "./DatePicker";
-export default function PatientForm({setTitle})
+import PatientMedication from "./PatientMedication";
+import { formatPatient } from "../Services/formatData";
+
+export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
 { 
+    setTitle("Patient Info");
     const id = useParams();
     const[patient,setPatient] = useState<Patient>();
     useEffect(()=>{
@@ -17,7 +21,7 @@ export default function PatientForm({setTitle})
                     },
                 });
                 const data = await  response.json();
-                setPatient(data);
+                setPatient(formatPatient(data));
             }catch(error)
             {
                 console.log(`unable to get the patient data because of this exception : ${error}`);
@@ -25,30 +29,54 @@ export default function PatientForm({setTitle})
         }
         fetchDetails();
     },[])
+    console.log(patient);
     return(
         <>
-            <div className="pl-20 pr-10" >                
-                <form>
-                    <div className="flex" >
-                        <div className="pr-10">
-                            <label htmlFor="firstName">First Name</label>
-                            <Input name="firstName" type="text" value={patient?.firstName ?? ""}></Input>
+            <form>
+                <div className="pl-20 pr-10">
+                    <div>
+                        <h2>Patient Details</h2>
+                        <div className="flex">
+                            <div className="pr-5">
+                                <label htmlFor="firstName">First Name</label>
+                                <Input name="firstName" type="text" value={patient?.firstName ?? ""}></Input>
+                            </div>
+                            <div>
+                                <label htmlFor="surname">Surname</label>
+                                <Input type="text" name="surname" value={patient?.surname ?? ""}></Input>
+                            </div>
                         </div>
-                        <div>
-                            <label htmlFor="surname">Surname</label>
-                            <Input type="text" name="surname" value={patient?.surname ?? ""}></Input>
+                        <div className="flex flex-col">
+                            <label > Date of Birth </label>
+                            <DatePicker value={patient?.dob}/>
+                        </div>
+                        <div className="flex">
+                            <div className="pr-5">
+                                <label htmlFor="address">Address</label>
+                                <Input className="w-60" name="address" type="text" value={patient?.address ?? ""}></Input>
+                            </div>
+                            <div>
+                                <label >Post Code</label>
+                                <Input className="w-20"  name="postcode" type="text" value={patient?.postcode ?? ""} />
+                            </div>
                         </div>
                     </div>
                     <div>
-                        <label> Date of Birth </label>
-                        <DatePicker value={patient?.dob}/>
+                        <h2>GP Details</h2>
+                        <div className="flex">
+                            <div className="pr-4">
+                                <label>GP Name</label>
+                                <Input value={patient?.gp?.name} /> 
+                            </div>
+                            <div className="w-60">
+                                <label>Address</label>
+                                <Input value={patient?.gp?.address}/>
+                            </div>
+                        </div>
                     </div>
-
-                    <div>
-                        <label></label>
-                    </div>
-                </form>
-            </div>
+                    <PatientMedication patient={patient} setPatient={setPatient}/> 
+                </div>
+            </form>
         </>
     );
 }

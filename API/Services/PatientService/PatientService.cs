@@ -31,7 +31,10 @@ public class PatientService : IPatientService
     public async Task<Patient> GetById(int id)
     {
         //Patient patient = await _context.Patients.Include(p=> p.patientMedication).FirstOrDefaultAsync(p => p.Id == id);
-        Patient patient = await _context.Patients.Include(p=> p.patientMedication).ThenInclude(pm=> pm.Medication).FirstOrDefaultAsync(p => p.Id == id);
+        Patient patient = await _context.Patients
+        .Include(p => p.Gp)
+        .Include(p=> p.patientMedication).ThenInclude(pm=> pm.Medication)
+        .FirstOrDefaultAsync(p => p.Id == id);
         //Patient patient = await _context.Patient.FindAsync(id);
         if(patient == null)
         {
