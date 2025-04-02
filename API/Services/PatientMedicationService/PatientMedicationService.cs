@@ -33,13 +33,10 @@ public class PatientMedicationService : IPatientMedicationService
             .FirstOrDefaultAsync(i => i.Id == id) ?? throw new Exception($"Unable to find a patient medication with the id : {id}");
         return pm;
     }
-    public async Task<bool> checkExists(PatientMedication patientMedication)
+    
+
+    public async Task<PatientMedication?> checkExists(PatientMedication patientMedication)
     {
-        var pm = await _context.PatientMedications.FirstOrDefaultAsync(i => i.PatientId == patientMedication.PatientId && i.MedicationId == patientMedication.MedicationId);
-        if(pm == null)
-        {
-            return false;
-        }
-        return true;
+        return await _context.PatientMedications.FirstOrDefaultAsync(i => i.PatientId == patientMedication.PatientId && i.MedicationId == patientMedication.MedicationId);
     }
 }
