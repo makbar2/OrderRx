@@ -5,5 +5,7 @@ public interface IPatientMedicationService
     Task<PatientMedication> GetById(int id);
     Task<PatientMedication> Add(PatientMedication patientMedication);
     Task<bool> Delete(int id);
+
+    Task<bool> checkExists(PatientMedication patientMedication);
 }
 

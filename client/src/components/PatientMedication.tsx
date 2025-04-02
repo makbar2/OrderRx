@@ -83,3 +83,26 @@ async function addMedication(id:number,medication : Medication)
         console.log(error);
     }
 }
+
+async function deleteMedication(id:number, medication : Medication)
+{
+    try{
+        if(medication)
+        {
+            const response = await fetch(`https://localhost:7295/patient/${id}/medications`,{
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                method: "DELETE",
+                body: JSON.stringify({
+                    id : medication.id
+                })
+            });
+            const data = await response.json();
+            console.log(data);
+        }
+    }catch(error)
+    {
+        console.log(error);
+    }
+}

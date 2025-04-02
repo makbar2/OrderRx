@@ -1,8 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Crypto.Encodings;
 public class PatientMedicationService : IPatientMedicationService
 {
     private readonly DataContext _context;
+
+    public PatientMedicationService(DataContext context)
+    {
+        _context = context;
+    }
 
     public async Task<PatientMedication> Add(PatientMedication patientMedication)
     {
@@ -28,5 +32,14 @@ public class PatientMedicationService : IPatientMedicationService
         PatientMedication pm = await _context.PatientMedications
             .FirstOrDefaultAsync(i => i.Id == id) ?? throw new Exception($"Unable to find a patient medication with the id : {id}");
         return pm;
+    }
+    public async Task<bool> checkExists(PatientMedication patientMedication)
+    {
+        var pm = await _context.PatientMedications.FirstOrDefaultAsync(i => i.PatientId == patientMedication.PatientId && i.MedicationId == patientMedication.MedicationId);
+        if(pm == null)
+        {
+            return false;
+        }
+        return true;
     }
 }
