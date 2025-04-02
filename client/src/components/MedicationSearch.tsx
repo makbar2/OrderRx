@@ -21,8 +21,9 @@ import {
 
 
 
-export function MedicationSearch({medicationList,setMedicationList}:
+export function MedicationSearch({medicationList,setMedicationList,setNewMedication}:
   {
+    setNewMedication : React.Dispatch<React.SetStateAction<Medication | undefined>>
     medicationList : Medication[] | undefined,
     setMedicationList:React.Dispatch<React.SetStateAction<Medication[]>>
   }
@@ -40,11 +41,6 @@ export function MedicationSearch({medicationList,setMedicationList}:
           aria-expanded={open}
           className=" w-[400px] justify-between"
         >
-          {/* {
-          value
-          ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."
-          } */}
           {value
             ? medicationList?.find((medication) => medication.name === value)?.name
             : "Select medication..."}
@@ -53,16 +49,17 @@ export function MedicationSearch({medicationList,setMedicationList}:
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="select a medication" />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>Unable to fetch medicatiion List</CommandEmpty>
             <CommandGroup>
               {
                 medicationList?.map((medication : Medication) =>(
                   <CommandItem key={medication.id} value={medication.name} 
                     onSelect={(currentValue)=> {
-                      setValue(currentValue === value ? "": currentValue)
-                      setOpen(false)
+                      setValue(currentValue === value ? "": currentValue);
+                      setNewMedication(medication);
+                      setOpen(false);
                     }}
                   >
                     <Check className={cn("mr-2 h-4 w-4", value === medication.name ? "opacity-100" : "opacity-0")} />

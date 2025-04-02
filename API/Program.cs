@@ -7,6 +7,7 @@ builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IGpPracticeService, GpPracticeService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
 
+
 // CORS Policy setup
 builder.Services.AddCors(options =>
 {
@@ -91,9 +92,17 @@ app.MapGet("/medications", async (IMedicationService _medicationsService) =>
     }
 });
 
-app.MapPost("/patient/{id}/medications",async (int id, IPatientService _patientService) =>{
+app.MapPost("/patient/{id}/medications",async (int id,Medication medication, IPatientService _patientService, IMedicationService _medicationsService, IPatientMe) =>{
     try{
-        var 
+
+        var patient = await _patientService.GetById(id);
+        var fetchedMedication = await _medicationsService.GetById(medication.Id);//client could modifiy the data, so a check is done
+
+
+        return Results.Ok("yes");
+    }catch(Exception error)
+    {
+        return Results.BadRequest(new { message = error.Message });
     }
 } );
 
