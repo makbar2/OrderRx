@@ -2,7 +2,7 @@
 import Patient from "@/Interfaces/Patient";
 import GpPractice from "@/Interfaces/GpPractice";
 import Medication from "@/Interfaces/Medication";
-function formatPatient(data): Patient
+function formatPatient(data:any): Patient
 {
     const patient: Patient = {
         id: data.id,
@@ -15,7 +15,7 @@ function formatPatient(data): Patient
         address : data.address, 
         notes: data.notes,
         gp : formatGP(data.gp),
-        patientMedication : formatMedications(data.patientMedication),
+        patientMedication : formatPatientMedications(data.patientMedication),
         collectionDate : data.collectionDate, 
         orderDate : data.orderDate,
         orderFrequency : data.orderFrequency,
@@ -38,10 +38,16 @@ function formatGP(data:any): GpPractice | undefined
     return undefined;
 }
 
-function formatMedications(data:any) : Medication[] | undefined
+
+/**
+ * this is for medications that were retrived from the get patient endpoint only, this function isnt 
+ * for formating medications from the medication endpoint
+ * @param data 
+ */
+function formatPatientMedications(data:any) : Medication[] | undefined
 {
     const medications: Medication[] = [];
-    if (data != null) {
+    if (data !== null) {
         data.forEach(i => {
             const medication: Medication = {
                 id: i.medication.id,
@@ -53,8 +59,9 @@ function formatMedications(data:any) : Medication[] | undefined
          * i.medication.id i used because the api returns the object as patientMedication [ medication {}]
          * due to the fact that it has a chain include kinda poop
          */
+        return medications;
     }
-    return medications.length > 0 ? medications : undefined;
+    return undefined;
 }
 
-export { formatPatient };
+export { formatPatient};

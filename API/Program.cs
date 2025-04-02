@@ -78,4 +78,23 @@ app.MapGet("/patients/search", async (string surname, IPatientService _patientSe
     }
 });
 
+app.MapGet("/medications", async (IMedicationService _medicationsService) =>
+{
+    try
+    {
+        var medications = await _medicationsService.Get();
+        return Results.Ok(medications);
+    }
+    catch (Exception error)
+    {
+        return Results.BadRequest(new { message = error.Message });
+    }
+});
+
+app.MapPost("/patient/{id}/medications",async (int id, IPatientService _patientService) =>{
+    try{
+        var 
+    }
+} );
+
 app.Run();

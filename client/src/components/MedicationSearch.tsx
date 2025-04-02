@@ -1,5 +1,5 @@
 "use client"
-
+import Medication from "@/Interfaces/Medication"
 import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
 
@@ -19,34 +19,18 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-]
 
-export function MedicationSearch() {
+
+export function MedicationSearch({medicationList,setMedicationList}:
+  {
+    medicationList : Medication[] | undefined,
+    setMedicationList:React.Dispatch<React.SetStateAction<Medication[]>>
+  }
+)
+{
+  console.log(medicationList);
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
-  const [medications, setMedications] = React.useState()
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -54,11 +38,16 @@ export function MedicationSearch() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className=" w-[400px] justify-between"
         >
+          {/* {
+          value
+          ? frameworks.find((framework) => framework.value === value)?.label
+            : "Select framework..."
+          } */}
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
+            ? medicationList?.find((medication) => medication.name === value)?.name
+            : "Select medication..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -68,24 +57,19 @@ export function MedicationSearch() {
           <CommandList>
             <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
-                <CommandItem
-                  key={framework.value}
-                  value={framework.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {framework.label}
-                </CommandItem>
-              ))}
+              {
+                medicationList?.map((medication : Medication) =>(
+                  <CommandItem key={medication.id} value={medication.name} 
+                    onSelect={(currentValue)=> {
+                      setValue(currentValue === value ? "": currentValue)
+                      setOpen(false)
+                    }}
+                  >
+                    <Check className={cn("mr-2 h-4 w-4", value === medication.name ? "opacity-100" : "opacity-0")} />
+                    {medication.name}
+                  </CommandItem>
+                ))
+              }
             </CommandGroup>
           </CommandList>
         </Command>
