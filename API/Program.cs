@@ -6,7 +6,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IGpPracticeService, GpPracticeService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
-
+builder.Services.AddScoped<IPatientMedicationService,PatientMedicationService >();
 
 // CORS Policy setup
 builder.Services.AddCors(options =>
