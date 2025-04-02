@@ -13,21 +13,32 @@ import {
 export default  function PatientMedication({patient,setPatient} : {patient : Patient,setPatient:React.Dispatch<React.SetStateAction<Patient>>})
 {   
     return (
-        <>
-            <div>
-                <h2>Patient Medication</h2>
-                <Table className="table-fixed">
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Medication</TableHead>
-                            <TableHead className="min-w-60px"></TableHead>
+        <div>
+            <h2>Patient Medication</h2>
+            <Table className="table-fixed">
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Medication Name</TableHead>
+                        <TableHead className="min-w-60px">Actions</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {(patient?.patientMedication || []).map((medication: Medication) => (
+                        <TableRow key={medication.id}>
+                            <TableCell>{medication.name}</TableCell>
+                            <TableCell>
+                                <button className="cursor-pointer text-red-500 ">Remove</button>
+                            </TableCell>
                         </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        
-                    </TableBody>
-                </Table>
-            </div>
-        </>
+                    ))}
+                    <TableRow>
+                        <TableCell>
+                            
+                        </TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+        </div>
     );
+    
 }
