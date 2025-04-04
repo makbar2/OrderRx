@@ -29,7 +29,6 @@ export function MedicationSearch({medicationList,setMedicationList,setNewMedicat
   }
 )
 {
-  console.log(medicationList);
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
   return (

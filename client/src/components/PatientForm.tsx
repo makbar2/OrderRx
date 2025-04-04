@@ -9,17 +9,17 @@ import { formatPatient } from "../Services/formatData";
 
 export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
 { 
-    setTitle("Patient Info");
+    
     const { id } = useParams<{ id: string }>();
     const[patient,setPatient] = useState<Patient>();
     const[medicationList, setMedicationList] = useState<Medication[]>([]);
     useEffect(()=>{
         if(id) 
         {
+            setTitle("Patient Info");
             fetchPatientDetails(id, setPatient);
             fetchMedicationList(setMedicationList)
         }
-        console.log(medicationList);
     },[])
     return(
         <>
