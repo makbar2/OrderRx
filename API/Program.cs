@@ -95,6 +95,18 @@ app.MapGet("/medications", async (IMedicationService _medicationsService) =>
     }
 });
 
+app.MapPost("/medications", async (Medication medication, IMedicationService _medicationsService) =>{
+    try
+    {
+        await _medicationsService.Add(medication);
+        return Results.Ok(medication);
+    }
+    catch (Exception error)
+    {
+        return Results.BadRequest(new { message = error.Message });
+    }
+});
+
 app.MapPost("/patient/{id}/medications",async (int id,Medication medication, IPatientService _patientService, IMedicationService _medicationsService, IPatientMedicationService _patientMedicationService) =>{
     try
     {
@@ -120,10 +132,10 @@ app.MapPost("/patient/{id}/medications",async (int id,Medication medication, IPa
     }
 } );
 
-app.MapDelete("/patient/{id}/medications",async (int id,Medication medication, IPatientService _patientService, IMedicationService _medicationsService, IPatientMedicationService _patientMedicationService) =>{
+app.MapDelete("/patient/{patientId}/medication/{medicationId}",async (int patientId,int medicationId,IPatientService _patientService, IMedicationService _medicationsService, IPatientMedicationService _patientMedicationService) =>{
     //todo: seperate routes out into seperate files, and make a function for the duplicate code in here and the post route for patient medications, because its the same but flipped on  the check
-        var patient = await _patientService.GetById(id);
-        var fetchedMedication = await _medicationsService.GetById(medication.Id);//client could modifiy the data, so a check is done
+        var patient = await _patientService.GetById(patientId);
+        var fetchedMedication = await _medicationsService.GetById(medicationId);//client could modifiy the data, so a check is done
         //create patientMedication then do a check to see if there is a patient medication that already exists so no duplicates happen
         PatientMedication pm = new PatientMedication{
             Patient = patient,
