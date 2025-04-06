@@ -65,7 +65,10 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
                             </div>
                         </div>
                     </div>
-                    <PatientMedication patient={patient} setPatient={setPatient} medicationList={medicationList} setMedicationList={setMedicationList}/> 
+                    {
+                        //to get rid of that annoying error
+                        patient ? <PatientMedication patient={patient} setPatient={setPatient} medicationList={medicationList} setMedicationList={setMedicationList}/> : ""
+                    }
                 </div>
             </div>
         </>

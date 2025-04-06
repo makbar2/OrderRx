@@ -12,6 +12,7 @@ import {
 import { MedicationSearch } from "./MedicationSearch";
 import { useState } from "react";
 
+
 export default  function PatientMedication(
     {patient,setPatient,medicationList,setMedicationList} : 
     {
@@ -23,10 +24,65 @@ export default  function PatientMedication(
     })
 {   
 
+    async function deleteMedication(patientId:number, medication : Medication)
+    {
+        try{
+            if(medication)
+            {
+                const response = await fetch(`https://localhost:7295/patient/${patientId}/medications`,{
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    method: "DELETE",
+                    body: JSON.stringify({
+                        id : medication.id
+                    })
+            });
+            const data = await response.json();
+            console.log(data);
+        }
+        }catch(error)
+        {
+            console.log(error);
+        }
+    }
+
+    async function addMedication(patientId:number,medication : Medication | undefined)
+    {       
+        try{
+            if(medication)
+            {
+                const response = await fetch(`https://localhost:7295/patient/${patientId}/medications`,{
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    method: "POST",
+                    body: JSON.stringify({
+                        id : medication.id
+                    })
+                });
+                const data = await response.json();
+                updatePatientMedication(patient,medication);
+            }else{
+                throw ("unable to add a non-medication object to patient" );
+            }
+        }catch(error)
+        {
+            console.log(error);
+        }
+    }    
+
+    async function updatePatientMedication(patient : Patient, medication : Medication) {
+        const updatedPatient = {
+            ...patient,
+            patientMedication: [...(patient.patientMedication || []), medication]
+        };
+        setPatient(updatedPatient);
+    }
+
     const [newMedication,setNewMedication] = useState<Medication>();
     return (
         <>
-        {newMedication ? newMedication.name :""}
             <div>
                 <h2>Patient Medication</h2>
                 <Table className="pl-2 table-fixed">
@@ -41,7 +97,7 @@ export default  function PatientMedication(
                             <TableRow key={medication.id}>
                                 <TableCell>{medication.name}</TableCell>
                                 <TableCell>
-                                    <button className="cursor-pointer text-red-500 ">Remove</button>
+                                    <button className="cursor-pointer text-red-500 " onClick={()=> deleteMedication(patient.id,medication)}>Remove</button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -61,48 +117,7 @@ export default  function PatientMedication(
     
 }
 
-async function addMedication(id:number,medication : Medication)
-{
-    try{
-        if(medication)
-        {
-            const response = await fetch(`https://localhost:7295/patient/${id}/medications`,{
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                method: "POST",
-                body: JSON.stringify({
-                    id : medication.id
-                })
-            });
-            const data = await response.json();
-            console.log(data);
-        }
-    }catch(error)
-    {
-        console.log(error);
-    }
-}
 
-async function deleteMedication(id:number, medication : Medication)
-{
-    try{
-        if(medication)
-        {
-            const response = await fetch(`https://localhost:7295/patient/${id}/medications`,{
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                method: "DELETE",
-                body: JSON.stringify({
-                    id : medication.id
-                })
-            });
-            const data = await response.json();
-            console.log(data);
-        }
-    }catch(error)
-    {
-        console.log(error);
-    }
-}
+
+
+
