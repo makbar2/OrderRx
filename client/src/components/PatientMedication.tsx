@@ -39,7 +39,7 @@ export default  function PatientMedication(
                     })
                 });
                 const data = await response.json();
-                const newMedList = patient.patientMedication?.filter((i:Medication) => i.id === medication.id);
+                const newMedList = patient.patientMedication?.filter((i:Medication) => i.id !== medication.id);
                 updatePatientMedication(patient,newMedList);
             }
         }catch(error)
