@@ -29,7 +29,7 @@ export default  function PatientMedication(
         try{
             if(medication)
             {
-                const response = await fetch(`https://localhost:7295/patient/${patientId}/medications`,{
+                const response = await fetch(`https://localhost:7295/patient/${patientId}/medication/${medication.id}`,{
                     headers: {
                         "Content-Type": "application/json"
                     },
@@ -37,15 +37,17 @@ export default  function PatientMedication(
                     body: JSON.stringify({
                         id : medication.id
                     })
-            });
-            const data = await response.json();
-            console.log(data);
-        }
+                });
+                const data = await response.json();
+                const newMedList = patient.patientMedication?.filter((i:Medication) => i.id === medication.id);
+                updatePatientMedication(patient,newMedList);
+            }
         }catch(error)
         {
             console.log(error);
         }
     }
+
 
     async function addMedication(patientId:number,medication : Medication | undefined)
     {       
@@ -72,11 +74,22 @@ export default  function PatientMedication(
         }
     }    
 
-    async function updatePatientMedication(patient : Patient, medication : Medication) {
-        const updatedPatient = {
-            ...patient,
-            patientMedication: [...(patient.patientMedication || []), medication]
-        };
+    async function updatePatientMedication(patient : Patient, medication : Medication | Medication[]) 
+    {
+        let updatedPatient : Patient;
+        if(Array.isArray(medication))
+        {
+            updatedPatient = {
+                ...patient,
+                patientMedication: medication
+            }
+        }else{
+
+            updatedPatient = {
+                ...patient,
+                patientMedication: [...(patient.patientMedication || []), medication]
+            };
+        }
         setPatient(updatedPatient);
     }
 

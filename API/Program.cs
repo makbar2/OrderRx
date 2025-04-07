@@ -143,12 +143,13 @@ app.MapDelete("/patient/{patientId}/medication/{medicationId}",async (int patien
             PatientId = patient.Id,
             MedicationId = fetchedMedication.Id
         };
-        if(await _patientMedicationService.checkExists(pm) != null)
+        var fetchedPM = await _patientMedicationService.checkExists(pm);
+        if(fetchedPM != null)
         {
-            await _patientMedicationService.Delete(pm.Id);
+            await _patientMedicationService.Delete(fetchedPM.Id);
             return Results.Ok(pm);
         }else{
-            throw new Exception("this patient medication relation already exists, you can't find a duplicate record");
+            throw new Exception($"unable to find a relation with patient {patientId} and medication {medicationId}");
         }
 });
 
