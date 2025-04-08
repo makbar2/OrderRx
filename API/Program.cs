@@ -65,6 +65,20 @@ app.MapGet("/patient", async (IPatientService _patientService) =>
     }
 });
 
+app.MapPost("/patient", async (Patient patient, IPatientService _patientService) =>
+{
+    try
+    {
+        await _patientService.Add(patient);
+        return Results.Ok(patient);
+    }
+    catch (Exception error)
+    {
+        return Results.BadRequest(new { message = error.Message });
+    }
+});
+
+
 app.MapGet("/patients/search", async (string surname, IPatientService _patientService) =>
 {
     try
@@ -164,7 +178,29 @@ app.MapGet("/patients/medications", async (IPatientMedicationService _patientMed
     }
 });
 
+app.MapPost("/gpSurgeries",async (GpPractice gp,IGpPracticeService _gpService) =>{
+    try
+    {
+        await _gpService.Add(gp);
+        return Results.Ok(gp);
+    }
+    catch (Exception error)
+    {
+        return Results.BadRequest(new { message = error.Message });
+    }
+});
 
-
+app.MapGet("/gpSurgeries", async (IGpPracticeService _gpService) =>
+{
+    try
+    {
+        var results = await _gpService.Get();
+        return Results.Ok(results);
+    }
+    catch (Exception error)
+    {
+        return Results.BadRequest(new { message = error.Message });
+    }
+});
 
 app.Run();

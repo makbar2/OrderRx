@@ -3,7 +3,7 @@ public class Patient
 {
     public int Id { get; set; } // PK
     [Required]
-    public string? FirstName { get; set; }
+    public string FirstName { get; set; }
     [Required]
     public string Surname { get; set; }
      [Required]
