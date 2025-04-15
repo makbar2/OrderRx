@@ -23,11 +23,12 @@ import {
 
 export function MedicationSearch({medicationList,setMedicationList,setNewMedication}:
   {
-    setNewMedication : React.Dispatch<React.SetStateAction<Medication | undefined>>
-    medicationList : Medication[] | undefined,
-    setMedicationList:React.Dispatch<React.SetStateAction<Medication[]>>
+    setNewMedication : React.Dispatch<React.SetStateAction<Medication | undefined>>//medication to be added to the patient 
+    medicationList : Medication[] | undefined,//list of all the medications that can be added
+    setMedicationList:React.Dispatch<React.SetStateAction<Medication[]>>//idk why this is here 
   }
 )
+//todo add the abitlity to add new medications as in the ability to add medciations to the database from this component
 {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");

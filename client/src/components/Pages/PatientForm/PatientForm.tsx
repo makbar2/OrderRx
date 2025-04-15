@@ -7,13 +7,34 @@ import PatientMedication from "./PatientMedication";
 import { formatPatient } from "@/Services/formatData";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/DatePicker";
+import GpPractice from "@/Interfaces/GpPractice";
+import GpSearch from "./GpSearch";
+import GpSurgeries from "../GpSurgeries";
 
 export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
 { 
     
     const { id } = useParams<{ id: string }>();
-    const[patient,setPatient] = useState<Patient>();
+    const [patient, setPatient] = useState<Patient>({
+        id: 0,
+        firstName: null,
+        surname: "",
+        dob: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
+        postcode: "",
+        notes: null,
+        gp: undefined,
+        patientMedication: null,
+        collectionDate: null,
+        orderDate: null,
+        orderFrequency: null,
+        active: null,
+    });
     const[medicationList, setMedicationList] = useState<Medication[]>([]);
+    const[gpList, setGpList] = useState<GpPractice[]>([]);
+    const [isNew, setIsNew] = useState<boolean>(true);
     const [responseMessage, setResponseMessage] = useState({
         type: "",
         message: ""
@@ -24,33 +45,15 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
         e.preventDefault();
         try
         {
-            console.log(gp); // Logging the form data for debugging
-            const response = await fetch("https://localhost:7295/gpSurgeries", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    Name: gp.name,
-                    Address: gp.address,
-                    Email: gp.email,
-                    PhoneNumber: gp.phoneNumber
-                })
-            });
-            if(response.ok) 
+            if(patient !== undefined)
             {
-                setResponseMessage({
-                    message: "GP surgery successfully added",
-                    type: "success"
-                });
-                setGp({
-                    name: "",
-                    address: "",
-                    email: "",
-                    phoneNumber: ""
-                });
-            } else {
-                throw new Error(`Response returned ${response.status} ${response.statusText}`);
+                if(isNew)
+                {
+                    
+                    await createPatient(patient)
+                }else{
+                    await savePatientData(patient)
+                }
             }
         }catch(error)
         {
@@ -64,11 +67,11 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
 
     useEffect(()=>{
         setTitle("Patient Info");
-        fetchMedicationList(setMedicationList);
+        fetchLists(setGpList,setMedicationList);
         if(id) 
         {
             fetchPatientDetails(id, setPatient);
-            
+            setIsNew(false);
         }
     },[])
     return(
@@ -105,19 +108,12 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
                     <div>
                         <h2>GP Details</h2>
                         <div className="flex">
-                            <div className="pr-4">
-                                <label>GP Name</label>
-                                <Input value={patient?.gp?.name} /> 
-                            </div>
-                            <div className="w-60">
-                                <label>Address</label>
-                                <Input value={patient?.gp?.address}/>
-                            </div>
+                          <GpSearch gpList={gpList} patient={patient} />
                         </div>
                     </div>
                     {
-                        //to get rid of that annoying error
-                        patient ? <PatientMedication patient={patient} setPatient={setPatient} medicationList={medicationList} setMedicationList={setMedicationList}/> : ""
+                        
+                        <PatientMedication patient={patient} setPatient={setPatient} medicationList={medicationList} setMedicationList={setMedicationList}/> 
                     }
                     <Button>Save</Button>
                 </div>
@@ -127,7 +123,34 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
 }
 
 
-async function fetchPatientDetails(id:string ,setPatient:React.Dispatch<React.SetStateAction<Patient | undefined>>)
+async function fetchLists(setGpList:React.Dispatch<React.SetStateAction<GpPractice[]>>,setMedicationList:React.Dispatch<React.SetStateAction<Medication[]>>) 
+{
+    const responseGp = await fetch(`https://localhost:7295/gpSurgeries`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    const responseMedication = await fetch(`https://localhost:7295/medications`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    if (responseGp.status !== 200) {
+        throw new Error(`Failed to fetch GP Surgeries: ${responseGp.statusText}`);
+    }
+    if (responseMedication.status !== 200) {
+        throw new Error(`Failed to fetch Medications: ${responseMedication.statusText}`);
+    }
+    const gpData = await responseGp.json();
+    const medData = await responseMedication.json();
+    setGpList(gpData);
+    setMedicationList(medData);
+}
+
+
+async function fetchPatientDetails(id:string ,setPatient:React.Dispatch<React.SetStateAction<Patient>>)
 {
     try{
         const response = await fetch(`https://localhost:7295/patient/${id}`, {
@@ -144,19 +167,42 @@ async function fetchPatientDetails(id:string ,setPatient:React.Dispatch<React.Se
     }
 }
 
-async function fetchMedicationList(setMedications:React.Dispatch<React.SetStateAction<Medication[]>>) {
-    try{
-        const response = await fetch(`https://localhost:7295/medications`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
 
-        const data = await response.json();
-        setMedications(data);
-    }catch(error)
+
+
+async function savePatientData(patient:Patient)
+{
+    // try{
+    //     const response = await fetch(`https://localhost:7295/patient/${patientId}/medications`,{
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         },
+    //         method: "PATCH",
+    //         body: JSON.stringify({
+                
+    //         })
+    //     });
+    // }catch{
+
+    // }
+}
+
+async function createPatient(patient:Patient)
+{
+   
+    const response = await fetch(`https://localhost:7295/patient/`,{
+        headers: {
+            "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({
+            patient: patient,
+        })
+    });
+    if(response.status !== 201)
     {
-        console.log(`unable to get list of medications due this error : ${error}`);
+        throw new Error(response.statusText)
     }
 }
+
+

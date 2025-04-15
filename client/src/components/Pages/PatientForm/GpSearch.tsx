@@ -18,19 +18,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import Patient from "@/Interfaces/Patient"
+import GpPractice from "@/Interfaces/GpPractice"
 
 
 
-export function MedicationSearch({gpList,patient}:
+export default function GpSearch({gpList,patient, setPatient}:
   {
-    gpList : React.Dispatch<React.SetStateAction<Medication | undefined>>
-    medicationList : Medication[] | undefined,
-    setMedicationList:React.Dispatch<React.SetStateAction<Medication[]>>
+    gpList : GpPractice[]
+    patient : Patient
+    setPatient : React.Dispatch<React.SetStateAction<Patient>>
   }
 )
 {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
+
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -41,8 +45,8 @@ export function MedicationSearch({gpList,patient}:
           className=" w-[400px] justify-between"
         >
           {value
-            ? medicationList?.find((medication) => medication.name === value)?.name
-            : "Select medication..."}
+            ? gpList?.find((gp) => gp.name === value)?.name
+            : "Select a Gp Practice..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -50,19 +54,24 @@ export function MedicationSearch({gpList,patient}:
         <Command>
           <CommandInput placeholder="select a medication" />
           <CommandList>
-            <CommandEmpty>Unable to fetch medicatiion List</CommandEmpty>
+            <CommandEmpty>Unable to fetch gp Practice list List</CommandEmpty>
             <CommandGroup>
               {
-                medicationList?.map((medication : Medication) =>(
-                  <CommandItem key={medication.id} value={medication.name} 
+                gpList?.map((gp : GpPractice) =>(
+                  <CommandItem key={gp.id} value={gp.name} 
                     onSelect={(currentValue)=> {
+                      let updatedPatient : Patient
                       setValue(currentValue === value ? "": currentValue);
-                      setNewMedication(medication);
+                      updatedPatient = {
+                        ...patient,
+                        gp: gp
+                      }
+                      setPatient(updatedPatient);
                       setOpen(false);
                     }}
                   >
-                    <Check className={cn("mr-2 h-4 w-4", value === medication.name ? "opacity-100" : "opacity-0")} />
-                    {medication.name}
+                    <Check className={cn("mr-2 h-4 w-4", value === gp.name ? "opacity-100" : "opacity-0")} />
+                    {`${gp.name} ${gp.address}`}
                   </CommandItem>
                 ))
               }

@@ -9,6 +9,8 @@ public interface IPatientService
         
     Task<List<Patient>> GetByDob(DateTime dob);
 
+    Task<Patient> Update(Patient patient);
+
     Task<bool> Delete(int id);
 }
 

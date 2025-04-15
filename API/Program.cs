@@ -96,6 +96,40 @@ app.MapGet("/patients/search", async (string surname, IPatientService _patientSe
     }
 });
 
+app.MapPatch("/patient/{id}", async (int id, Patient updatedData, IPatientService _patientService) =>
+{
+    try
+    {
+        var existingPatient = await _patientService.GetById(id);
+
+        if (existingPatient == null)
+        {
+            return Results.NotFound(new { message = "Patient not found." });
+        }
+        existingPatient.FirstName = updatedData.FirstName ?? existingPatient.FirstName;
+        existingPatient.Surname = updatedData.Surname ?? existingPatient.Surname;
+        existingPatient.Email = updatedData.Email ?? existingPatient.Email;
+        existingPatient.PhoneNumber = updatedData.PhoneNumber ?? existingPatient.PhoneNumber;
+        existingPatient.Address = updatedData.Address ?? existingPatient.Address;
+        existingPatient.Postcode = updatedData.Postcode ?? existingPatient.Postcode;
+        existingPatient.Notes = updatedData.Notes ?? existingPatient.Notes;
+        if (updatedData.DOB != default) existingPatient.DOB = updatedData.DOB;
+        if (updatedData.GpPracticeId != 0) existingPatient.GpPracticeId = updatedData.GpPracticeId;
+        if (updatedData.CollectionDate.HasValue) existingPatient.CollectionDate = updatedData.CollectionDate;
+        if (updatedData.OrderDate.HasValue) existingPatient.OrderDate = updatedData.OrderDate;
+        if (updatedData.OrderFrequency.HasValue) existingPatient.OrderFrequency = updatedData.OrderFrequency;
+        if (updatedData.Active.HasValue) existingPatient.Active = updatedData.Active;
+
+        await _patientService.Update(existingPatient);
+
+        return Results.Ok(existingPatient);
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { message = ex.Message });
+    }
+});
+
 app.MapGet("/medications", async (IMedicationService _medicationsService) =>
 {
     try

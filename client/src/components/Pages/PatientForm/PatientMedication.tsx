@@ -17,7 +17,7 @@ export default  function PatientMedication(
     {patient,setPatient,medicationList,setMedicationList} : 
     {
         patient : Patient,
-        setPatient:React.Dispatch<React.SetStateAction<Patient | undefined>>,
+        setPatient:React.Dispatch<React.SetStateAction<Patient>>,
         medicationList : Medication[] | undefined,
         setMedicationList: React.Dispatch<React.SetStateAction<Medication[]>>;
 
@@ -93,7 +93,7 @@ export default  function PatientMedication(
         setPatient(updatedPatient);
     }
 
-    const [newMedication,setNewMedication] = useState<Medication>();
+    const [newMedication,setNewMedication] = useState<Medication>();//new medication that is being added to the patient object
     return (
         <>
             <div>
