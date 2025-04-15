@@ -10,8 +10,10 @@ import {
   } from "@/components/ui/table";  
 import { Button } from "../../ui/button";
 import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 export default function PatientTable({patients,mode=0}: {patients:Patient[],mode:number})
 {
+    const navigate = useNavigate();
     return (
         <>
             <Table className="table-fixed">
@@ -32,7 +34,9 @@ export default function PatientTable({patients,mode=0}: {patients:Patient[],mode
                             <TableCell>{patient.address}</TableCell>
                             <TableCell>{patient.postcode}</TableCell>
                             <TableCell>
-                                <Button className="" ><Link to={`/patient/${patient.id}`} >Edit</Link></Button>
+                            <Button onClick={() => navigate(`/patient/${patient.id}`)}>
+                                Edit
+                            </Button>
                             </TableCell>
                         </TableRow>
                     ))}

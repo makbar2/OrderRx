@@ -18,7 +18,7 @@ export default function FormAlert({type,message} : {type:string, message:string}
 
     return(
         <>
-            <Alert className={`${colour}`}>
+            <Alert className={`border-${colour}`}>
                 <AlertTitle>{type}</AlertTitle>
                     <AlertDescription>
                         {message}

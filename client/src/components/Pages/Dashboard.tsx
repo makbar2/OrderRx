@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import OrderToday from "../OrderToday";
 import PatientSearch from "./PatientSearch/PatientSearch";
 import GpSurgeries from "./GpSurgeries";
-import PatientForm from "../PatientForm";
+import PatientForm from "./PatientForm/PatientForm";
 import { useState } from "react";
 export default function Dashboard()
 {
@@ -21,6 +21,7 @@ export default function Dashboard()
                     <Routes>
                         <Route path="/" element={<OrderToday />}/>
                         <Route path="/patients" element={<PatientSearch setTitle={setTitle} />}/>
+                        <Route path="/patients/new" element={<PatientForm setTitle={setTitle} />}/>
                         <Route path="/gp" element={<GpSurgeries />}/>
                         <Route path="/patient/:id" element={<PatientForm setTitle={setTitle}/>} />
                     </Routes>

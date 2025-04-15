@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import Patient from "@/Interfaces/Patient";
 import { useParams } from "react-router-dom";
-import { Input } from "./ui/input";
-import { DatePicker } from "./DatePicker";
+import { Input } from "@/components/ui/input";
 import Medication from "@/Interfaces/Medication";
 import PatientMedication from "./PatientMedication";
-import { formatPatient } from "../Services/formatData";
+import { formatPatient } from "@/Services/formatData";
+import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/DatePicker";
 
 export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
 { 
@@ -13,17 +14,66 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
     const { id } = useParams<{ id: string }>();
     const[patient,setPatient] = useState<Patient>();
     const[medicationList, setMedicationList] = useState<Medication[]>([]);
+    const [responseMessage, setResponseMessage] = useState({
+        type: "",
+        message: ""
+    }); 
+    
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) 
+    {
+        e.preventDefault();
+        try
+        {
+            console.log(gp); // Logging the form data for debugging
+            const response = await fetch("https://localhost:7295/gpSurgeries", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    Name: gp.name,
+                    Address: gp.address,
+                    Email: gp.email,
+                    PhoneNumber: gp.phoneNumber
+                })
+            });
+            if(response.ok) 
+            {
+                setResponseMessage({
+                    message: "GP surgery successfully added",
+                    type: "success"
+                });
+                setGp({
+                    name: "",
+                    address: "",
+                    email: "",
+                    phoneNumber: ""
+                });
+            } else {
+                throw new Error(`Response returned ${response.status} ${response.statusText}`);
+            }
+        }catch(error)
+        {
+            console.log("An error has occurred when trying to submit the form: " + error);
+            setResponseMessage({
+                message: `An error has occurred when trying to submit the form: ${error}`,
+                type: "failure"
+            });
+        }
+    }
+
     useEffect(()=>{
+        setTitle("Patient Info");
+        fetchMedicationList(setMedicationList);
         if(id) 
         {
-            setTitle("Patient Info");
             fetchPatientDetails(id, setPatient);
-            fetchMedicationList(setMedicationList)
+            
         }
     },[])
     return(
         <>
-            <div>
+            <form onSubmit={handleSubmit}>
                 <div className="pl-20 pr-10">
                     <div>
                         <h2>Patient Details</h2>
@@ -69,8 +119,9 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
                         //to get rid of that annoying error
                         patient ? <PatientMedication patient={patient} setPatient={setPatient} medicationList={medicationList} setMedicationList={setMedicationList}/> : ""
                     }
+                    <Button>Save</Button>
                 </div>
-            </div>
+            </form>
         </>
     );
 }

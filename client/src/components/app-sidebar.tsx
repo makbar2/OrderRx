@@ -26,6 +26,11 @@ const items = [
     url: "/gp",
     icon: User,
   },
+  {
+    title: "New Patient",
+    url: "/patients/new",
+    icon: User,
+  }
 ]
 
 export function AppSidebar() {
