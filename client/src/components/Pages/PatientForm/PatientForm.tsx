@@ -9,7 +9,10 @@ import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/DatePicker";
 import GpPractice from "@/Interfaces/GpPractice";
 import GpSearch from "./GpSearch";
+import { Textarea } from "@/components/ui/textarea"
+
 import GpSurgeries from "../GpSurgeries";
+import OrderToday from "@/components/OrderToday";
 
 export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
 { 
@@ -17,53 +20,58 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
     const { id } = useParams<{ id: string }>();
     const [patient, setPatient] = useState<Patient>({
         id: 0,
-        firstName: null,
+        firstName: "",
         surname: "",
         dob: "",
         email: "",
         phoneNumber: "",
         address: "",
         postcode: "",
-        notes: null,
+        notes: "",
         gp: undefined,
-        patientMedication: null,
+        patientMedication: [],
         collectionDate: null,
-        orderDate: null,
-        orderFrequency: null,
-        active: null,
+        orderDate: "",
+        orderFrequency: 0,
+        active: false,
     });
     const[medicationList, setMedicationList] = useState<Medication[]>([]);
     const[gpList, setGpList] = useState<GpPractice[]>([]);
+    const [forecastedDates,setForecastedDates] = useState<string[]>([]);
     const [isNew, setIsNew] = useState<boolean>(true);
     const [responseMessage, setResponseMessage] = useState({
         type: "",
         message: ""
     }); 
+
+
+    function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) 
+    {
+        const { name, value } = e.target;
+        setPatient((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+    }
+
+    function handleDateChange(name: string, date: string) {//ai gen mostliekyl slop cba 
+        // Create a new Date object from the ISO string
+        const formattedDate = formatToYYYYMMDD(date);
+        // Update the patient's date field
+        setPatient((prev) => ({
+            ...prev,
+            [name]: formattedDate
+        }));
+    }
     
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) 
     {
         e.preventDefault();
-        try
-        {
-            if(patient !== undefined)
-            {
-                if(isNew)
-                {
-                    
-                    await createPatient(patient)
-                }else{
-                    await savePatientData(patient)
-                }
-            }
-        }catch(error)
-        {
-            console.log("An error has occurred when trying to submit the form: " + error);
-            setResponseMessage({
-                message: `An error has occurred when trying to submit the form: ${error}`,
-                type: "failure"
-            });
-        }
+        console.log(patient);
+
     }
+
+    
 
     useEffect(()=>{
         setTitle("Patient Info");
@@ -72,6 +80,11 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
         {
             fetchPatientDetails(id, setPatient);
             setIsNew(false);
+            if(patient.collectionDate)
+            {
+
+                const dates = generateDates(patient.collectionDate,patient.orderFrequency)
+            }
         }
     },[])
     return(
@@ -83,39 +96,58 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
                         <div className="flex">
                             <div className="pr-5">
                                 <label htmlFor="firstName">First Name</label>
-                                <Input name="firstName" type="text" value={patient?.firstName ?? ""}></Input>
+                                <Input name="firstName" type="text" value={patient.firstName } onChange={handleInputChange}></Input>
                             </div>
                             <div>
                                 <label htmlFor="surname">Surname</label>
-                                <Input type="text" name="surname" value={patient?.surname ?? ""}></Input>
+                                <Input type="text" name="surname" value={patient.surname } onChange={handleInputChange}></Input>
                             </div>
                         </div>
                         <div className="flex flex-col">
                             <label > Date of Birth </label>
-                            <DatePicker value={patient?.dob}/>
+                            <DatePicker value={patient.dob} onChange={handleDateChange} name="dob"/>
                         </div>
                         <div className="flex">
                             <div className="pr-5">
                                 <label htmlFor="address">Address</label>
-                                <Input className="w-60" name="address" type="text" value={patient?.address ?? ""}></Input>
+                                <Input className="w-60" name="address" type="text" value={patient.address } onChange={handleInputChange}></Input>
                             </div>
                             <div>
                                 <label >Post Code</label>
-                                <Input className="w-20"  name="postcode" type="text" value={patient?.postcode ?? ""} />
+                                <Input className="w-20"  name="postcode" type="text" value={patient.postcode }  onChange={handleInputChange}/>
                             </div>
                         </div>
                     </div>
                     <div>
                         <h2>GP Details</h2>
                         <div className="flex">
-                          <GpSearch gpList={gpList} patient={patient} />
+                          <GpSearch gpList={gpList} patient={patient}  setPatient={setPatient}/>
                         </div>
                     </div>
+                    <div className="flex flex-col">
+                        <label > Order date </label>
+                        <DatePicker value={patient?.dob}/>
+                        <label > Order frequency in days  </label>
+                        <Input type="number" className="w-25"></Input>
+                        <label>Collection Date</label>
+                        <DatePicker value={patient?.dob} setPatient={patient}/>
+                        <div>
+                            <h3>Forecasted Dates</h3>
+
+                        </div>
+                    </div>
+                    <div>
                     {
                         
                         <PatientMedication patient={patient} setPatient={setPatient} medicationList={medicationList} setMedicationList={setMedicationList}/> 
                     }
-                    <Button>Save</Button>
+   
+                        <h2> Patient Notes</h2>
+                        <Textarea  rows={3} value={patient.notes} onChange={handleInputChange}/>
+
+                    </div>
+
+                    <Button className="mt-4">Save</Button>
                 </div>
             </form>
         </>
@@ -168,8 +200,6 @@ async function fetchPatientDetails(id:string ,setPatient:React.Dispatch<React.Se
 }
 
 
-
-
 async function savePatientData(patient:Patient)
 {
     // try{
@@ -206,3 +236,22 @@ async function createPatient(patient:Patient)
 }
 
 
+function generateDates(startDate:string, frequency:number) : string[]
+{
+    const dates = [];
+    const date = new Date(startDate);
+    for (let i = 0; i < 5; i++) {
+        const newDate = new Date(startDate);
+        newDate.setDate(date.getDate() + i * frequency);
+        dates.push(newDate.toDateString());
+      }
+    return dates;
+}
+
+function formatToYYYYMMDD(isoDateString) {
+    const date = new Date(isoDateString);  // Convert the string to a Date object
+    const year = date.getUTCFullYear();    // Get the full year
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Get the month (pad single digits)
+    const day = String(date.getUTCDate()).padStart(2, '0');         // Get the day (pad single digits)
+    return `${year}-${month}-${day}`;      // Format it to 'yyyy-mm-dd'
+}

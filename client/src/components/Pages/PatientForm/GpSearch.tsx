@@ -44,9 +44,15 @@ export default function GpSearch({gpList,patient, setPatient}:
           aria-expanded={open}
           className=" w-[400px] justify-between"
         >
-          {value
-            ? gpList?.find((gp) => gp.name === value)?.name
-            : "Select a Gp Practice..."}
+          {
+            value? (() => {
+              const selectedGp = gpList.find((gp) => gp.name === value);
+              return selectedGp
+                ? `${selectedGp.name} - ${selectedGp.address}`
+                : "Select a Gp Practice...";
+            })()
+            : "Select a Gp Practice..."
+          }
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -60,18 +66,17 @@ export default function GpSearch({gpList,patient, setPatient}:
                 gpList?.map((gp : GpPractice) =>(
                   <CommandItem key={gp.id} value={gp.name} 
                     onSelect={(currentValue)=> {
-                      let updatedPatient : Patient
+                    
                       setValue(currentValue === value ? "": currentValue);
-                      updatedPatient = {
-                        ...patient,
-                        gp: gp
-                      }
-                      setPatient(updatedPatient);
+                      setPatient((prev) => ({
+                        ...prev,
+                        gp: gp,
+                      }));
                       setOpen(false);
                     }}
                   >
                     <Check className={cn("mr-2 h-4 w-4", value === gp.name ? "opacity-100" : "opacity-0")} />
-                    {`${gp.name} ${gp.address}`}
+                    {`${gp.name}`}
                   </CommandItem>
                 ))
               }

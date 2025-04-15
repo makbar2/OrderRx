@@ -18,7 +18,7 @@ export default  function PatientMedication(
     {
         patient : Patient,
         setPatient:React.Dispatch<React.SetStateAction<Patient>>,
-        medicationList : Medication[] | undefined,
+        medicationList : Medication[],
         setMedicationList: React.Dispatch<React.SetStateAction<Medication[]>>;
 
     })
@@ -29,16 +29,7 @@ export default  function PatientMedication(
         try{
             if(medication)
             {
-                const response = await fetch(`https://localhost:7295/patient/${patientId}/medication/${medication.id}`,{
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    method: "DELETE",
-                    body: JSON.stringify({
-                        id : medication.id
-                    })
-                });
-                const data = await response.json();
+   
                 const newMedList = patient.patientMedication?.filter((i:Medication) => i.id !== medication.id);
                 updatePatientMedication(patient,newMedList);
             }
@@ -74,7 +65,7 @@ export default  function PatientMedication(
         }
     }    
 
-    async function updatePatientMedication(patient : Patient, medication : Medication | Medication[]) 
+    async function updatePatientMedication(patient : Patient, medication : Medication[]) 
     {
         let updatedPatient : Patient;
         if(Array.isArray(medication))
@@ -93,7 +84,7 @@ export default  function PatientMedication(
         setPatient(updatedPatient);
     }
 
-    const [newMedication,setNewMedication] = useState<Medication>();//new medication that is being added to the patient object
+    const [newMedication,setNewMedication] = useState<Medication>();//new medication that is being added to the patient object 
     return (
         <>
             <div>

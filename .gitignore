@@ -9,6 +9,7 @@ API/Migrations
 
 # Ignore environment variable files
 .env
+prompt.txt
 
 # Ignore build directories
 dist/
