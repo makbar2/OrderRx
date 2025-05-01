@@ -23,14 +23,12 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
         firstName: "",
         surname: "",
         dob: "",
-        email: "",
-        phoneNumber: "",
         address: "",
         postcode: "",
         notes: "",
         gp: undefined,
         patientMedication: [],
-        collectionDate: null,
+        collectionDate: "",
         orderDate: "",
         orderFrequency: 0,
         active: false,
@@ -52,6 +50,7 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
           ...prev,
           [name]: value,
         }));
+        console.log(patient);
     }
 
     function handleDateChange(name: string, date: string) {//ai gen mostliekyl slop cba 
@@ -83,10 +82,21 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
             if(patient.collectionDate)
             {
 
-                const dates = generateDates(patient.collectionDate,patient.orderFrequency)
+                const dates = generateDates(patient.collectionDate,patient.orderFrequency);
+                setForecastedDates(dates);
             }
         }
     },[])
+    useEffect(()=>{
+        if(patient.collectionDate)
+        {
+            const dates = generateDates(patient.collectionDate,patient.orderFrequency);
+            console.log(dates);
+            setForecastedDates(dates);
+            
+        }
+
+    },[patient.collectionDate,patient.orderFrequency,patient.orderDate])
     return(
         <>
             <form onSubmit={handleSubmit}>
@@ -126,14 +136,18 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
                     </div>
                     <div className="flex flex-col">
                         <label > Order date </label>
-                        <DatePicker value={patient?.dob}/>
+                        <DatePicker value={patient.orderDate ? patient.orderDate: "" } onChange={handleDateChange} name="orderDate"/>
                         <label > Order frequency in days  </label>
-                        <Input type="number" className="w-25"></Input>
+                        <Input type="number" className="w-25" onChange={handleInputChange} name="orderFrequency"></Input>
                         <label>Collection Date</label>
-                        <DatePicker value={patient?.dob} setPatient={patient}/>
+                        <DatePicker value={patient.collectionDate ? patient.collectionDate: "" } onChange={handleDateChange} name="collectionDate"/>
                         <div>
                             <h3>Forecasted Dates</h3>
-
+                            {
+                                forecastedDates.map(date =>(
+                                    <p>{date}</p>
+                                ))
+                            }
                         </div>
                     </div>
                     <div>
@@ -143,7 +157,7 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
                     }
    
                         <h2> Patient Notes</h2>
-                        <Textarea  rows={3} value={patient.notes} onChange={handleInputChange}/>
+                        <Textarea  rows={3} value={patient.notes} onChange={handleInputChange} name="notes"/>
 
                     </div>
 
@@ -238,20 +252,22 @@ async function createPatient(patient:Patient)
 
 function generateDates(startDate:string, frequency:number) : string[]
 {
+    const startDateObject = new Date(startDate);
     const dates = [];
-    const date = new Date(startDate);
-    for (let i = 0; i < 5; i++) {
-        const newDate = new Date(startDate);
-        newDate.setDate(date.getDate() + i * frequency);
+    for(let i = 1;i<=5; i++)
+    {
+        const newDate = new Date(startDateObject);
+        newDate.setDate(newDate.getDate() + frequency * i);
+        console.log(frequency);
         dates.push(newDate.toDateString());
-      }
+    }
     return dates;
 }
 
-function formatToYYYYMMDD(isoDateString) {
-    const date = new Date(isoDateString);  // Convert the string to a Date object
-    const year = date.getUTCFullYear();    // Get the full year
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Get the month (pad single digits)
-    const day = String(date.getUTCDate()).padStart(2, '0');         // Get the day (pad single digits)
-    return `${year}-${month}-${day}`;      // Format it to 'yyyy-mm-dd'
+function formatToYYYYMMDD(isoDateString:string) {
+    const date = new Date(isoDateString);  
+    const year = date.getUTCFullYear();    
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); 
+    const day = String(date.getUTCDate()).padStart(2, '0');         
+    return `${year}-${month}-${day}`;    
 }

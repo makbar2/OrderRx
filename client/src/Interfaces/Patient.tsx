@@ -6,15 +6,13 @@ export default interface Patient
   firstName: string;
   surname: string;
   dob: string; // DateOnly in C# maps to a string (ISO 8601 format) in TypeScript
-  email: string;
-  phoneNumber: string; // Default value in C# is "000-000-0000", but this will be handled in your app logic
   address: string;
   postcode: string;
   notes?: string;
   gp?: GpPractice; // Assuming you have a corresponding GpPractice interface in TypeScript
   patientMedication?: Medication[];
-  collectionDate?: string | null; // DateTime?, should be string or null
+  collectionDate?: string; // DateTime?, should be string or null
   orderDate?: string;// DateTime?, should be string or null
-  orderFrequency?: number; // Nullable number
+  orderFrequency: number; // Nullable number
   active?: boolean;
 }
