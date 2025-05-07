@@ -69,6 +69,7 @@ app.MapPost("/patient", async (Patient patient, IPatientService _patientService)
 {
     try
     {
+        //ef will think that i am trying to insert a new medication and gp practice, need to remove the attributes
         await _patientService.Add(patient);
         return Results.Ok(patient);
     }
@@ -108,8 +109,6 @@ app.MapPatch("/patient/{id}", async (int id, Patient updatedData, IPatientServic
         }
         existingPatient.FirstName = updatedData.FirstName ?? existingPatient.FirstName;
         existingPatient.Surname = updatedData.Surname ?? existingPatient.Surname;
-        existingPatient.Email = updatedData.Email ?? existingPatient.Email;
-        existingPatient.PhoneNumber = updatedData.PhoneNumber ?? existingPatient.PhoneNumber;
         existingPatient.Address = updatedData.Address ?? existingPatient.Address;
         existingPatient.Postcode = updatedData.Postcode ?? existingPatient.Postcode;
         existingPatient.Notes = updatedData.Notes ?? existingPatient.Notes;

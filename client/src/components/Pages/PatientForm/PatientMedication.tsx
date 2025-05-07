@@ -101,7 +101,7 @@ export default  function PatientMedication(
                             <TableRow key={medication.id}>
                                 <TableCell>{medication.name}</TableCell>
                                 <TableCell>
-                                    <button className="cursor-pointer text-red-500 " onClick={()=> deleteMedication(patient.id,medication)}>Remove</button>
+                                    <button type="button" className="cursor-pointer text-red-500 " onClick={()=> deleteMedication(patient.id,medication)}>Remove</button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -110,7 +110,7 @@ export default  function PatientMedication(
                                 <MedicationSearch setNewMedication={setNewMedication} medicationList={medicationList} setMedicationList={setMedicationList} />
                             </TableCell>
                             <TableCell>
-                                <button className="cursor-pointer text-green-500 " onClick={() => addMedication(patient.id,newMedication)}>Add</button>
+                                <button type="button" className="cursor-pointer text-green-500 " onClick={() => addMedication(patient.id,newMedication)}>Add</button>
                             </TableCell>
                         </TableRow>
                     </TableBody>

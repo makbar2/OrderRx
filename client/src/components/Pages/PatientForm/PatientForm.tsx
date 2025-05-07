@@ -63,13 +63,26 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
         }));
     }
     
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) 
-    {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         console.log(patient);
-
+        try 
+        {
+            if(isNew) 
+            {
+                await createPatient(patient);
+                setResponseMessage({ type: "success", message: "Patient created successfully." });
+            }else{
+                await updatePatient(patient);
+                setResponseMessage({ type: "success", message: "Patient updated successfully." });
+            }
+        } catch (error: any) 
+        {
+            console.error("Submission error:", error);
+            setResponseMessage({ type: "error", message: error.message });
+        }
     }
-
+    
     
 
     useEffect(()=>{
@@ -214,40 +227,46 @@ async function fetchPatientDetails(id:string ,setPatient:React.Dispatch<React.Se
 }
 
 
-async function savePatientData(patient:Patient)
-{
-    // try{
-    //     const response = await fetch(`https://localhost:7295/patient/${patientId}/medications`,{
-    //         headers: {
-    //             "Content-Type": "application/json"
-    //         },
-    //         method: "PATCH",
-    //         body: JSON.stringify({
-                
-    //         })
-    //     });
-    // }catch{
 
-    // }
-}
-
-async function createPatient(patient:Patient)
-{
-   
-    const response = await fetch(`https://localhost:7295/patient/`,{
-        headers: {
-            "Content-Type": "application/json"
-        },
+async function createPatient(patient: Patient) {
+    const response = await fetch(`https://localhost:7295/patient/`, {
         method: "POST",
-        body: JSON.stringify({
-            patient: patient,
-        })
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(patient),
     });
-    if(response.status !== 201)
-    {
-        throw new Error(response.statusText)
+
+    if (response.status !== 201) {
+        throw new Error(`Create failed: ${response.statusText}`);
     }
+
+    return await response.json();
 }
+
+async function updatePatient(patient: Patient) {
+    const response = await fetch(`https://localhost:7295/patient/${patient.id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(patient),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Update failed: ${response.statusText}`);
+    }
+
+    return await response.json();
+}
+
+function stripData(patient:Patinet):Patient
+{
+    /**
+     * need to strip details from the gp and medication, becasue ef will think that i am trying to create  new records for them
+     */
+}
+
 
 
 function generateDates(startDate:string, frequency:number) : string[]

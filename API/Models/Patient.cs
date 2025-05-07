@@ -9,11 +9,6 @@ public class Patient
      [Required]
     public DateOnly DOB { get; set; }
     [Required]
-    public string Email {get;set;}
-        
-    [Required]
-    public string PhoneNumber { get; set; } = "000-000-0000"; // Default value
-    [Required]
     public string Address {get; set;}
     [Required]
     public string Postcode {get; set;}

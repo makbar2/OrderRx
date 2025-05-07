@@ -76,8 +76,6 @@ public class PatientService : IPatientService
         existingPatient.FirstName = patient.FirstName;
         existingPatient.Surname = patient.Surname;
         existingPatient.DOB = patient.DOB;
-        existingPatient.Email = patient.Email;
-        existingPatient.PhoneNumber = patient.PhoneNumber;
         existingPatient.Address = patient.Address;
         existingPatient.Postcode = patient.Postcode;
         existingPatient.Address = patient.Address;
