@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import Medication from "@/Interfaces/Medication";
 import PatientMedication from "./PatientMedication";
+import PatientMedicationWrapper from "@/Interfaces/PatientMedicationWrapper"
 import { formatPatient } from "@/Services/formatData";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/DatePicker";
@@ -13,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 import GpSurgeries from "../GpSurgeries";
 import OrderToday from "@/components/OrderToday";
+import PatientTable from "../PatientSearch/PatientTable";
 
 export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
 { 
@@ -65,15 +67,16 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
     
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        console.log(patient);
+        const newPatient = wrapMedication(patient);
+        console.log(newPatient);
         try 
         {
             if(isNew) 
             {
-                await createPatient(patient);
+                await createPatient(newPatient);
                 setResponseMessage({ type: "success", message: "Patient created successfully." });
             }else{
-                await updatePatient(patient);
+                await updatePatient(newPatient);
                 setResponseMessage({ type: "success", message: "Patient updated successfully." });
             }
         } catch (error: any) 
@@ -260,12 +263,19 @@ async function updatePatient(patient: Patient) {
     return await response.json();
 }
 
-function stripData(patient:Patinet):Patient
+function wrapMedication(ogPatient:Patient) : Patient
 {
-    /**
-     * need to strip details from the gp and medication, becasue ef will think that i am trying to create  new records for them
-     */
+    const medicationList = ogPatient.patientMedication?.map((medication : Medication) =>( 
+         ({Medication: medication})
+        )) ??[];
+    const patient : Patient = {
+        ...ogPatient,
+        patientMedication: medicationList
+    }
+    return patient;
 }
+
+
 
 
 

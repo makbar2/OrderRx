@@ -65,11 +65,35 @@ app.MapGet("/patient", async (IPatientService _patientService) =>
     }
 });
 
-app.MapPost("/patient", async (Patient patient, IPatientService _patientService) =>
+app.MapPost("/patient", async (Patient patient, IPatientService _patientService, IMedicationService _medicationsService,IGpPracticeService _gpService) =>
 {
     try
     {
-        //ef will think that i am trying to insert a new medication and gp practice, need to remove the attributes
+        /*
+            the ef core will just assume that i am creating a new gp and medications
+            i have tried only sending the ids and creating the patient however that causes an error as its not matching the ids 
+            so i removed the data stripping from the client as its not needed
+        */
+        var fetchedGP = await _gpService.GetById(patient.Gp.Id);
+        patient.Gp = fetchedGP;
+        Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(patient));
+        var newPatientMedication = new List<PatientMedication>();
+        if(patient.patientMedication != null)
+        {
+            foreach(PatientMedication pm in patient.patientMedication)
+            {
+                Medication fetchedMedication = await  _medicationsService.GetById(pm.Medication.Id);
+                var newPm = new PatientMedication//creating a new relation row
+                {
+                    Medication = fetchedMedication,
+                    MedicationId = fetchedMedication.Id,
+                    PatientId = patient.Id,
+                    Patient = patient
+                };
+                newPatientMedication.Add(newPm);
+            }
+            patient.patientMedication = newPatientMedication;
+        }
         await _patientService.Add(patient);
         return Results.Ok(patient);
     }
