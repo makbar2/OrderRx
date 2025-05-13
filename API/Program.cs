@@ -73,6 +73,7 @@ app.MapPost("/patient", async (Patient patient, IPatientService _patientService,
             the ef core will just assume that i am creating a new gp and medications
             i have tried only sending the ids and creating the patient however that causes an error as its not matching the ids 
             so i removed the data stripping from the client as its not needed
+            how is tis creating a new pm when i didnt call that service, what the fuck, unless the orm is just able to do that.
         */
         var fetchedGP = await _gpService.GetById(patient.Gp.Id);
         patient.Gp = fetchedGP;
@@ -121,7 +122,7 @@ app.MapGet("/patients/search", async (string surname, IPatientService _patientSe
     }
 });
 
-app.MapPatch("/patient/{id}", async (int id, Patient updatedData, IPatientService _patientService) =>
+app.MapPatch("/patient/{id}", async (int id, Patient updatedPatient, IPatientService _patientService, IMedicationService _medicationsService, IPatientMedicationService _patientMedicationService) =>
 {
     try
     {
@@ -131,19 +132,63 @@ app.MapPatch("/patient/{id}", async (int id, Patient updatedData, IPatientServic
         {
             return Results.NotFound(new { message = "Patient not found." });
         }
-        existingPatient.FirstName = updatedData.FirstName ?? existingPatient.FirstName;
-        existingPatient.Surname = updatedData.Surname ?? existingPatient.Surname;
-        existingPatient.Address = updatedData.Address ?? existingPatient.Address;
-        existingPatient.Postcode = updatedData.Postcode ?? existingPatient.Postcode;
-        existingPatient.Notes = updatedData.Notes ?? existingPatient.Notes;
-        if (updatedData.DOB != default) existingPatient.DOB = updatedData.DOB;
-        if (updatedData.GpPracticeId != 0) existingPatient.GpPracticeId = updatedData.GpPracticeId;
-        if (updatedData.CollectionDate.HasValue) existingPatient.CollectionDate = updatedData.CollectionDate;
-        if (updatedData.OrderDate.HasValue) existingPatient.OrderDate = updatedData.OrderDate;
-        if (updatedData.OrderFrequency.HasValue) existingPatient.OrderFrequency = updatedData.OrderFrequency;
-        if (updatedData.Active.HasValue) existingPatient.Active = updatedData.Active;
+        existingPatient.FirstName = updatedPatient.FirstName ?? existingPatient.FirstName;
+        existingPatient.Surname = updatedPatient.Surname ?? existingPatient.Surname;
+        existingPatient.Address = updatedPatient.Address ?? existingPatient.Address;
+        existingPatient.Postcode = updatedPatient.Postcode ?? existingPatient.Postcode;
+        existingPatient.Notes = updatedPatient.Notes ?? existingPatient.Notes;
+        if (updatedPatient.DOB != default) existingPatient.DOB = updatedPatient.DOB;
+        if (updatedPatient.GpPracticeId != 0) existingPatient.GpPracticeId = updatedPatient.GpPracticeId;
+        if (updatedPatient.CollectionDate.HasValue) existingPatient.CollectionDate = updatedPatient.CollectionDate;
+        if (updatedPatient.OrderDate.HasValue) existingPatient.OrderDate = updatedPatient.OrderDate;
+        if (updatedPatient.OrderFrequency.HasValue) existingPatient.OrderFrequency = updatedPatient.OrderFrequency;
+        if (updatedPatient.Active.HasValue) existingPatient.Active = updatedPatient.Active;
+        //check list of medications to see if if there is any changes
+        // loop through new list 
+        // if it pm doesnt exist in new  list remove it from the exiting patient
+        var newPatientMedication = new List<PatientMedication>();
+        if(existingPatient.patientMedication != null)
+        {
+            Dictionary<int, int> oldMedications = new Dictionary<int, int>();
+            //if found then set value to 1, if not 0, if key doesnt exist create new pm, if value doesnt exist remove pm
+            foreach(PatientMedication pm in existingPatient.patientMedication)
+            {
+                oldMedications.Add(pm.Medication.Id,0);
+            }
+            foreach(PatientMedication pm in updatedPatient.patientMedication)
+            {
+                if(oldMedications.ContainsKey(pm.Medication.Id))
+                {
+                    oldMedications[pm.Medication.Id] = 1;
+                }else{
+                    var fetchedMedication = await  _medicationsService.GetById(pm.Medication.Id);
+                    var newPm = new PatientMedication//creating a new relation row
+                    {
+                        Medication = fetchedMedication,
+                        MedicationId = fetchedMedication.Id,
+                        PatientId = existingPatient.Id,
+                        Patient = existingPatient
+                    };
+                    newPatientMedication.Add(newPm);
+                }
+            }
 
+            foreach(KeyValuePair<int,int> pair in oldMedications)//deletion
+            {
+                if(pair.Value == 0)
+                {
+                    await _patientMedicationService.DeleteByIds(existingPatient.Id,pair.Key);
+                    //cba passing in the patientmedication id, long to implement this is faster do implement
+                }
+            }
+        }
         await _patientService.Update(existingPatient);
+        //i am going to assume that the orm is going to need to be specifically add and delete pm objects as 
+        //as it might think all the pms' are new
+        foreach(PatientMedication pm in newPatientMedication)
+        {
+            await _patientMedicationService.Add(pm);
+        }
 
         return Results.Ok(existingPatient);
     }

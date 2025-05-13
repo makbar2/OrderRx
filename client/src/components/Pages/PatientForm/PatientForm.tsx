@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Patient from "@/Interfaces/Patient";
 import { useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { DatePicker } from "@/components/DatePicker";
 import GpPractice from "@/Interfaces/GpPractice";
 import GpSearch from "./GpSearch";
 import { Textarea } from "@/components/ui/textarea";
+import FormAlert from "@/components/FormAlert";
 
 
 
@@ -37,6 +38,8 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
     const[gpList, setGpList] = useState<GpPractice[]>([]);
     const [forecastedDates,setForecastedDates] = useState<string[]>([]);
     const [isNew, setIsNew] = useState<boolean>(true);
+    const location = useLocation();
+    const stateMessage = location.state?.message;
     const [responseMessage, setResponseMessage] = useState({
         type: "",
         message: ""
@@ -73,7 +76,9 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
             {
                 const data = await createPatient(newPatient);
                 setResponseMessage({ type: "success", message: "Patient created successfully." });
-                navigate(`/patients/${data.id}`);
+                navigate(`/patients/${data.id}`,{
+                    state : {message : "Patient created successfully."}
+                });
             }else{
                 await updatePatient(newPatient);
                 setResponseMessage({ type: "success", message: "Patient updated successfully." });
@@ -85,8 +90,6 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
         }
     }
     
-    
-
     useEffect(()=>{
         setTitle("Patient Info");
         fetchLists(setGpList,setMedicationList);
@@ -94,6 +97,10 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
         {
             fetchPatientDetails(id, setPatient);
             setIsNew(false);
+            if(stateMessage) 
+            {
+                setResponseMessage({ type: "success" , message: "Patient Successfully Created" });
+            }
             if(patient.collectionDate)
             {
 
@@ -102,6 +109,7 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
             }
         }
     },[])
+
     useEffect(()=>{
         if(patient.collectionDate)
         {
@@ -116,6 +124,7 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
         <>
             <form onSubmit={handleSubmit}>
                 <div className="pl-20 pr-10">
+                    {responseMessage.type !== "" && <FormAlert type={responseMessage.type} message={responseMessage.message} />}
                     <div>
                         <h2>Patient Details</h2>
                         <div className="flex">
@@ -273,9 +282,6 @@ function wrapMedication(ogPatient:Patient) : Patient
     }
     return patient;
 }
-
-
-
 
 
 function generateDates(startDate:string, frequency:number) : string[]

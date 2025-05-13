@@ -20,7 +20,6 @@ public class PatientMedicationService : IPatientMedicationService
         var pm = await _context.PatientMedications.FirstAsync(i => i.Id == patientMedicationId) ?? 
             throw new Exception($"Unable to find a relation  with the id of{patientMedicationId}");
         _context.PatientMedications.Remove(pm);
-        _context.PatientMedications.Remove(pm);
         await _context.SaveChangesAsync();
         return true;
     }
@@ -42,5 +41,14 @@ public class PatientMedicationService : IPatientMedicationService
     public async Task<PatientMedication?> checkExists(PatientMedication patientMedication)
     {
         return await _context.PatientMedications.FirstOrDefaultAsync(i => i.PatientId == patientMedication.PatientId && i.MedicationId == patientMedication.MedicationId);
+    }
+
+    public async Task<bool> DeleteByIds(int patientId, int medicationId)
+    {
+        var pm = await _context.PatientMedications.FirstAsync(i => i.PatientId == patientId && i.MedicationId == medicationId) ?? 
+            throw new Exception($"Unable to find a relation between patient : {patientId} and medication : {medicationId}");
+        _context.PatientMedications.Remove(pm);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

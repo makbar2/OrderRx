@@ -34,7 +34,7 @@ export default function PatientTable({patients,mode=0}: {patients:Patient[],mode
                             <TableCell>{patient.address}</TableCell>
                             <TableCell>{patient.postcode}</TableCell>
                             <TableCell>
-                            <Button onClick={() => navigate(`/patient/${patient.id}`)}>
+                            <Button onClick={() => navigate(`/patients/${patient.id}`)}>
                                 Edit
                             </Button>
                             </TableCell>

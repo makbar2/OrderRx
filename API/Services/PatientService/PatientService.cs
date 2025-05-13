@@ -63,28 +63,12 @@ public class PatientService : IPatientService
         return patient;
     }
     
-   /// <summary>
-   /// Only updates the patient's details 
-   /// so first,surname,email,dob,phonenumber, address, post code
-   /// </summary>
-   /// <param name="patient"></param>
-   /// <returns>patient object that was passed in</returns>
-    public async Task<Patient> UpdateDetails(Patient patient)
-    {
-        var existingPatient = await _context.Patients.FirstOrDefaultAsync(p => p.Id == patient.Id) ??
-            throw new Exception($"Unable to find a patient to update");
-        existingPatient.FirstName = patient.FirstName;
-        existingPatient.Surname = patient.Surname;
-        existingPatient.DOB = patient.DOB;
-        existingPatient.Address = patient.Address;
-        existingPatient.Postcode = patient.Postcode;
-        existingPatient.Address = patient.Address;
-        await _context.SaveChangesAsync();
-        return existingPatient;
-    }
+  
 
-    public Task<Patient> Update(Patient patient)
+    public async Task<Patient> Update(Patient patient)
     {
-        throw new NotImplementedException();
+        _context.Patients.Update(patient);
+        await _context.SaveChangesAsync();
+        return patient;
     }
 }
