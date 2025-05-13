@@ -95,7 +95,7 @@ app.MapPost("/patient", async (Patient patient, IPatientService _patientService,
             patient.patientMedication = newPatientMedication;
         }
         await _patientService.Add(patient);
-        return Results.Ok(patient);
+        return Results.Created($"/patient/{patient.Id}", patient);
     }
     catch (Exception error)
     {

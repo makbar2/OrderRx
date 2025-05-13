@@ -23,7 +23,7 @@ export default function Dashboard()
                         <Route path="/patients" element={<PatientSearch setTitle={setTitle} />}/>
                         <Route path="/patients/new" element={<PatientForm setTitle={setTitle} />}/>
                         <Route path="/gp" element={<GpSurgeries />}/>
-                        <Route path="/patient/:id" element={<PatientForm setTitle={setTitle}/>} />
+                        <Route path="/patients/:id" element={<PatientForm setTitle={setTitle}/>} />
                     </Routes>
                 </main>
             </SidebarProvider>

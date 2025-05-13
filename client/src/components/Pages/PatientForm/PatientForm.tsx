@@ -1,24 +1,22 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import Patient from "@/Interfaces/Patient";
 import { useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import Medication from "@/Interfaces/Medication";
 import PatientMedication from "./PatientMedication";
-import PatientMedicationWrapper from "@/Interfaces/PatientMedicationWrapper"
 import { formatPatient } from "@/Services/formatData";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/DatePicker";
 import GpPractice from "@/Interfaces/GpPractice";
 import GpSearch from "./GpSearch";
-import { Textarea } from "@/components/ui/textarea"
+import { Textarea } from "@/components/ui/textarea";
 
-import GpSurgeries from "../GpSurgeries";
-import OrderToday from "@/components/OrderToday";
-import PatientTable from "../PatientSearch/PatientTable";
+
 
 export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
 { 
-    
+    const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const [patient, setPatient] = useState<Patient>({
         id: 0,
@@ -73,8 +71,9 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
         {
             if(isNew) 
             {
-                await createPatient(newPatient);
+                const data = await createPatient(newPatient);
                 setResponseMessage({ type: "success", message: "Patient created successfully." });
+                navigate(`/patients/${data.id}`);
             }else{
                 await updatePatient(newPatient);
                 setResponseMessage({ type: "success", message: "Patient updated successfully." });
@@ -239,7 +238,6 @@ async function createPatient(patient: Patient) {
         },
         body: JSON.stringify(patient),
     });
-
     if (response.status !== 201) {
         throw new Error(`Create failed: ${response.statusText}`);
     }
@@ -255,6 +253,7 @@ async function updatePatient(patient: Patient) {
         },
         body: JSON.stringify(patient),
     });
+    console.log(response);
 
     if (!response.ok) {
         throw new Error(`Update failed: ${response.statusText}`);
