@@ -53,18 +53,9 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
           ...prev,
           [name]: value,
         }));
-        console.log(patient);
     }
 
-    function handleDateChange(name: string, date: string) {//ai gen mostliekyl slop cba 
-        // Create a new Date object from the ISO string
-        const formattedDate = formatToYYYYMMDD(date);
-        // Update the patient's date field
-        setPatient((prev) => ({
-            ...prev,
-            [name]: formattedDate
-        }));
-    }
+
     
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -139,7 +130,8 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
                         </div>
                         <div className="flex flex-col">
                             <label > Date of Birth </label>
-                            <DatePicker value={patient.dob} onChange={handleDateChange} name="dob"/>
+                            <Input type="date" value={patient.dob} onChange={handleInputChange} name="dob" className="w-45"/>
+                         
                         </div>
                         <div className="flex">
                             <div className="pr-5">
@@ -160,11 +152,12 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
                     </div>
                     <div className="flex flex-col">
                         <label > Order date </label>
-                        <DatePicker value={patient.orderDate ? patient.orderDate: "" } onChange={handleDateChange} name="orderDate"/>
+                        <Input type="date" value={patient.dob} onChange={handleInputChange} name="dob"/>
+                       
                         <label > Order frequency in days  </label>
                         <Input type="number" className="w-25" onChange={handleInputChange} name="orderFrequency"></Input>
                         <label>Collection Date</label>
-                        <DatePicker value={patient.collectionDate ? patient.collectionDate: "" } onChange={handleDateChange} name="collectionDate"/>
+                        <Input type="date" value={patient.dob} onChange={handleInputChange} name="dob"/>
                         <div>
                             <h3>Forecasted Dates</h3>
                             {

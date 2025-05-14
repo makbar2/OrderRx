@@ -53,12 +53,15 @@ export function DatePicker({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
-          <Calendar
+          <input type="date"></input>
+          {/* <Calendar
+            captionLayout="dropdown-buttons"
+            fromYear={1900}
             mode="single"
             selected={date}
             onSelect={handleSelect}
             initialFocus
-          />
+          /> */}
         </PopoverContent>
       </Popover>
     )
