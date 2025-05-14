@@ -12,6 +12,8 @@ public interface IPatientService
 
     Task<List<Patient>> getOrders(DateTime date);
 
+    Task<List<PatientMedication>> GetMedications(int id);
+
     Task<bool> Delete(int id);
 }
 

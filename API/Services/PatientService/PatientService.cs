@@ -82,4 +82,13 @@ public class PatientService : IPatientService
         return patients;
     }
 
+    public async Task<List<PatientMedication>> GetMedications(int id)
+    {
+        var medications = await _context.Patients
+            .Where(p => p.Id == id).Include(p=> p.patientMedication).ThenInclude(pm=> pm.Medication)
+            .SelectMany(p => p.patientMedication)
+            .ToListAsync();
+        return medications;
+    }
+
 }

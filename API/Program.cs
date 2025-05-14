@@ -55,12 +55,31 @@ app.MapGet("/patient/{id}", async (int id, IPatientService _patientService) =>
     }
 });
 
-app.MapGet("/patient", async (IPatientService _patientService) =>
+app.MapGet("/patients", async (IPatientService _patientService) =>
 {
     try
     {
         var patients = await _patientService.Get();
         return Results.Ok(patients);
+    }
+    catch (Exception error)
+    {
+        return Results.BadRequest(new { message = error.Message });
+    }
+});
+
+app.MapGet("/patients/{id}/medications", async (int id,IPatientService _patientService) =>
+{
+    try
+    {
+        var medications = await _patientService.GetMedications(id);
+        if(medications.IsNullOrEmpty())
+        {
+            return Results.NotFound();
+        }else{
+
+            return Results.Ok(medications);
+        }
     }
     catch (Exception error)
     {
