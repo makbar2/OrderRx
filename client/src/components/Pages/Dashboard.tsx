@@ -1,7 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { BrowserRouter, Route, Routes } from "react-router";
-import OrderToday from "../OrderToday";
+import OrderWeek from "@/components/Pages/Orders/OrderWeek";
 import PatientSearch from "./PatientSearch/PatientSearch";
 import GpSurgeries from "./GpSurgeries";
 import PatientForm from "./PatientForm/PatientForm";
@@ -19,7 +19,7 @@ export default function Dashboard()
                         <h1 className="ml-4">{title}</h1>
                     </div>
                     <Routes>
-                        <Route path="/" element={<OrderToday />}/>
+                        <Route path="/" element={<OrderWeek />}/>
                         <Route path="/patients" element={<PatientSearch setTitle={setTitle} />}/>
                         <Route path="/patients/new" element={<PatientForm setTitle={setTitle} />}/>
                         <Route path="/gp" element={<GpSurgeries />}/>

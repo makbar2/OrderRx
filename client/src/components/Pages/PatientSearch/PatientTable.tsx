@@ -23,6 +23,8 @@ export default function PatientTable({patients,mode=0}: {patients:Patient[],mode
                         <TableHead className="min-w-240px">Date Of Birth</TableHead>
                         <TableHead className="min-w-240px">Address</TableHead>
                         <TableHead className="min-w-240px">Post Code</TableHead>
+                        {mode === 1? <TableHead className="min-w-240px">Order Date</TableHead> : "" }
+                        {mode === 1? <TableHead className="min-w-240px">Collection Date</TableHead> : "" }
                         <TableHead className="min-w-240px"></TableHead>
                     </TableRow>
                 </TableHeader>
@@ -33,10 +35,19 @@ export default function PatientTable({patients,mode=0}: {patients:Patient[],mode
                             <TableCell>{patient.dob}</TableCell>
                             <TableCell>{patient.address}</TableCell>
                             <TableCell>{patient.postcode}</TableCell>
+                            {mode === 1? <TableCell>{patient.orderDate}</TableCell> : "" }
+                            {mode === 1? <TableCell>{patient.collectionDate}</TableCell> : "" }
                             <TableCell>
-                            <Button onClick={() => navigate(`/patients/${patient.id}`)}>
-                                Edit
-                            </Button>
+                                <Button  onClick={()=>{
+                                    if(mode === 1)
+                                    {
+                                        console.log("order panel");
+                                    }else{
+                                        navigate(`/patients/${patient.id}`)
+                                    }
+                                }}>
+                                    Edit
+                                </Button>
                             </TableCell>
                         </TableRow>
                     ))}
