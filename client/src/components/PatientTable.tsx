@@ -1,4 +1,4 @@
-import Patient from "../../../Interfaces/Patient";
+import Patient from "../Interfaces/Patient";
 import {
     Table,
     TableBody,
@@ -7,8 +7,9 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table";  
-import { Button } from "../../ui/button";
+import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
+import OrderDialog from "@/components/Pages/Orders/OrderDialog";
 export default function PatientTable({patients,mode=0}: {patients:Patient[],mode:number})
 {
     const navigate = useNavigate();
@@ -36,16 +37,7 @@ export default function PatientTable({patients,mode=0}: {patients:Patient[],mode
                             {mode === 1? <TableCell>{patient.orderDate}</TableCell> : "" }
                             {mode === 1? <TableCell>{patient.collectionDate}</TableCell> : "" }
                             <TableCell>
-                                <Button  onClick={()=>{
-                                    if(mode === 1)
-                                    {
-                                        console.log("order panel");
-                                    }else{
-                                        navigate(`/patients/${patient.id}`)
-                                    }
-                                }}>
-                                    Edit
-                                </Button>
+                                {mode ===1 ? <OrderDialog patient={patient}/> : <Button onClick={navigate(`/patients/${patient.id}`)} >Edit</Button>}
                             </TableCell>
                         </TableRow>
                     ))}

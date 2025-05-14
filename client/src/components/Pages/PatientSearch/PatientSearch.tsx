@@ -1,7 +1,7 @@
 import Patient from "../../../Interfaces/Patient";
 import { useState } from "react";
 import PatientSearchBar from "./PatientSearchBar";
-import PatientTable from "./PatientTable";
+import PatientTable from "../../PatientTable";
 
 export default function PatientSearch({ setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> }) {
     setTitle("Patient Search");

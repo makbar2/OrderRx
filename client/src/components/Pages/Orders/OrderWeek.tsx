@@ -3,8 +3,9 @@ import { useEffect, useState, useMemo } from "react";
  * memo is going to be used here, as 
  */
 import Patient from "../../../Interfaces/Patient";
-import PatientTable from "../PatientSearch/PatientTable";
+import PatientTable from "../../PatientTable";
 import formatDate from "@/utils/formatDate";
+import PatientMedication from "../PatientForm/PatientMedication";
 export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
 {
     const [patients, setPatients] = useState<Patient[]>([]);
@@ -24,6 +25,7 @@ export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.
             if(response.ok)
             {   
                 const data = await response.json();
+                console.log(data);
                 const result: Patient[] = data.map(i => ({
                     id: i.id,
                     firstName: i.firstName,
@@ -36,6 +38,7 @@ export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.
                     orderDate : formatDate(i.orderDate,false),
                     collectionDate : formatDate(i.collectionDate,false),
                 }));//todo: change the patient search to do this, or not it doesnt matter does the same thing
+                //meds not included, to increase preformance, when the user opens the dialog  i will return the medication list
                 setPatients(result);
                 console.log(result);
             }else if(response.status === 404)
