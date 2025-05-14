@@ -10,6 +10,8 @@ public interface IPatientService
 
     Task<Patient> Update(Patient patient);
 
+    Task<List<Patient>> getOrders(DateTime date);
+
     Task<bool> Delete(int id);
 }
 

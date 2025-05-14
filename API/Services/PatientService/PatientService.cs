@@ -71,4 +71,15 @@ public class PatientService : IPatientService
         await _context.SaveChangesAsync();
         return patient;
     }
+
+    public async  Task<List<Patient>> getOrders(DateTime date)
+    {
+        var startOfWeek = date.Date.AddDays(-(int)date.DayOfWeek + (int)DayOfWeek.Monday);
+        var endOfWeek = startOfWeek.AddDays(6).AddDays(1).AddTicks(-1); 
+       List<Patient> patients = await _context.Patients
+        .Where(p => p.OrderDate >= startOfWeek && p.OrderDate <= endOfWeek)
+        .ToListAsync();
+        return patients;
+    }
+
 }

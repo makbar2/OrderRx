@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.IdentityModel.Tokens;
 using Mysqlx.Expr;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 
@@ -60,6 +63,23 @@ app.MapGet("/patient", async (IPatientService _patientService) =>
         return Results.Ok(patients);
     }
     catch (Exception error)
+    {
+        return Results.BadRequest(new { message = error.Message });
+    }
+});
+
+
+//get this weeks orders
+app.MapGet("/patients/orders",async (IPatientService _patientService)=>{
+    try{
+        var patients = await _patientService.getOrders(DateTime.Today);
+        if(patients.IsNullOrEmpty())
+        {
+            return Results.NotFound();
+        }else{
+            return Results.Ok(patients);
+        }
+    }catch(Exception error)
     {
         return Results.BadRequest(new { message = error.Message });
     }
