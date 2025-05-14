@@ -12,6 +12,7 @@ import GpPractice from "@/Interfaces/GpPractice";
 import GpSearch from "./GpSearch";
 import { Textarea } from "@/components/ui/textarea";
 import FormAlert from "@/components/FormAlert";
+import formatToYYYYMMDD from "@/utils/formatToYYYYMMDD";
 
 
 
@@ -152,12 +153,12 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
                     </div>
                     <div className="flex flex-col">
                         <label > Order date </label>
-                        <Input type="date" value={patient.dob} onChange={handleInputChange} name="dob"/>
+                        <Input type="date" value={formatToYYYYMMDD(patient.orderDate)} onChange={handleInputChange} name="orderDate" />
                        
                         <label > Order frequency in days  </label>
-                        <Input type="number" className="w-25" onChange={handleInputChange} name="orderFrequency"></Input>
+                        <Input type="number" className="w-25" onChange={handleInputChange} name="orderFrequency" value={patient.orderFrequency}></Input>
                         <label>Collection Date</label>
-                        <Input type="date" value={patient.dob} onChange={handleInputChange} name="dob"/>
+                        <Input type="date" value={formatToYYYYMMDD(patient.collectionDate)} onChange={handleInputChange} name="collectionDate"/>
                         <div>
                             <h3>Forecasted Dates</h3>
                             {
@@ -291,10 +292,3 @@ function generateDates(startDate:string, frequency:number) : string[]
     return dates;
 }
 
-function formatToYYYYMMDD(isoDateString:string) {
-    const date = new Date(isoDateString);  
-    const year = date.getUTCFullYear();    
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); 
-    const day = String(date.getUTCDate()).padStart(2, '0');         
-    return `${year}-${month}-${day}`;    
-}
