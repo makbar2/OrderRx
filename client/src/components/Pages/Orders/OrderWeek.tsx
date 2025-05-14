@@ -4,10 +4,16 @@ import { useEffect, useState, useMemo } from "react";
  */
 import Patient from "../../../Interfaces/Patient";
 import PatientTable from "../PatientSearch/PatientTable";
-export default function OrderToday()
+import formatDate from "@/utils/formatDate";
+export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
 {
     const [patients, setPatients] = useState<Patient[]>([]);
     useEffect(()=>{
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        const year = today.getFullYear();
+        setTitle(`Orders for  ${day}-${month}-${year}`)
         async function getOrders() {
             const response = await fetch(`https://localhost:7295/patients/orders`, {
                 method: "GET",
@@ -27,8 +33,8 @@ export default function OrderToday()
                     address: i.address,
                     postcode: i.postcode,
                     dob: i.dob,
-                    orderDate : i.orderDate,
-                    collectionDate : i.collectionDate,
+                    orderDate : formatDate(i.orderDate,false),
+                    collectionDate : formatDate(i.collectionDate,false),
                 }));//todo: change the patient search to do this, or not it doesnt matter does the same thing
                 setPatients(result);
                 console.log(result);

@@ -7,12 +7,12 @@ import Medication from "@/Interfaces/Medication";
 import PatientMedication from "./PatientMedication";
 import { formatPatient } from "@/Services/formatData";
 import { Button } from "@/components/ui/button";
-import { DatePicker } from "@/components/DatePicker";
+
 import GpPractice from "@/Interfaces/GpPractice";
 import GpSearch from "./GpSearch";
 import { Textarea } from "@/components/ui/textarea";
 import FormAlert from "@/components/FormAlert";
-import formatToYYYYMMDD from "@/utils/formatToYYYYMMDD";
+import formatDate from "@/utils/formatDate";
 
 
 
@@ -153,12 +153,12 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
                     </div>
                     <div className="flex flex-col">
                         <label > Order date </label>
-                        <Input type="date" value={formatToYYYYMMDD(patient.orderDate)} onChange={handleInputChange} name="orderDate" />
+                        <Input type="date" value={formatDate(patient.orderDate)} onChange={handleInputChange} name="orderDate" />
                        
                         <label > Order frequency in days  </label>
                         <Input type="number" className="w-25" onChange={handleInputChange} name="orderFrequency" value={patient.orderFrequency}></Input>
                         <label>Collection Date</label>
-                        <Input type="date" value={formatToYYYYMMDD(patient.collectionDate)} onChange={handleInputChange} name="collectionDate"/>
+                        <Input type="date" value={formatDate(patient.collectionDate)} onChange={handleInputChange} name="collectionDate"/>
                         <div>
                             <h3>Forecasted Dates</h3>
                             {

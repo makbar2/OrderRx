@@ -8,7 +8,7 @@ import PatientForm from "./PatientForm/PatientForm";
 import { useState } from "react";
 export default function Dashboard()
 {
-    const [title,setTitle] = useState("Today's Orders");
+    const [title,setTitle] = useState("");
     return (
         <BrowserRouter>
             <SidebarProvider>
@@ -19,7 +19,7 @@ export default function Dashboard()
                         <h1 className="ml-4">{title}</h1>
                     </div>
                     <Routes>
-                        <Route path="/" element={<OrderWeek />}/>
+                        <Route path="/" element={<OrderWeek  setTitle={setTitle}/>}/>
                         <Route path="/patients" element={<PatientSearch setTitle={setTitle} />}/>
                         <Route path="/patients/new" element={<PatientForm setTitle={setTitle} />}/>
                         <Route path="/gp" element={<GpSurgeries />}/>
