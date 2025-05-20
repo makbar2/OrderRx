@@ -217,7 +217,7 @@ async function fetchLists(setGpList:React.Dispatch<React.SetStateAction<GpPracti
 async function fetchPatientDetails(id:string ,setPatient:React.Dispatch<React.SetStateAction<Patient>>)
 {
     try{
-        const response = await fetch(`https://localhost:7295/patient/${id}`, {
+        const response = await fetch(`https://localhost:7295/patients/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -234,7 +234,7 @@ async function fetchPatientDetails(id:string ,setPatient:React.Dispatch<React.Se
 
 
 async function createPatient(patient: Patient) {
-    const response = await fetch(`https://localhost:7295/patient/`, {
+    const response = await fetch(`https://localhost:7295/patients/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -249,7 +249,7 @@ async function createPatient(patient: Patient) {
 }
 
 async function updatePatient(patient: Patient) {
-    const response = await fetch(`https://localhost:7295/patient/${patient.id}`, {
+    const response = await fetch(`https://localhost:7295/patients/${patient.id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",

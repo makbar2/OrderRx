@@ -10,7 +10,7 @@ import {
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 import OrderDialog from "@/components/Pages/Orders/OrderDialog";
-export default function PatientTable({patients,mode=0}: {patients:Patient[],mode:number})
+export default function PatientTable({patients,mode=0, patientList,setPatients }: {patients:Patient[],mode:number, patientList : Patient[],setPatients : React.Dispatch<React.SetStateAction<Patient[]>>})
 {
     const navigate = useNavigate();
     return (
@@ -37,7 +37,7 @@ export default function PatientTable({patients,mode=0}: {patients:Patient[],mode
                             {mode === 1? <TableCell>{patient.orderDate}</TableCell> : "" }
                             {mode === 1? <TableCell>{patient.collectionDate}</TableCell> : "" }
                             <TableCell>
-                                {mode ===1 ? <OrderDialog patient={patient}/> : <Button onClick={navigate(`/patients/${patient.id}`)} >Edit</Button>}
+                                {mode ===1 ? <OrderDialog patient={patient} setPatients={setPatients} patientList={patientList}/> : <Button onClick={() => navigate(`/patients/${patient.id}`)} >Edit</Button>}
                             </TableCell>
                         </TableRow>
                     ))}

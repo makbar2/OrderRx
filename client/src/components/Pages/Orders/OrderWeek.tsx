@@ -54,7 +54,8 @@ export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.
     return(
         <>
             <h1>This Weeks Orders</h1>
-            <PatientTable mode={1} patients={patients} />
+            
+            <PatientTable mode={1} patients={patients}  setPatients={setPatients} patientList={patients}/>
         </>
     );
 }

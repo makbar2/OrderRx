@@ -42,7 +42,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Map API routes
-app.MapGet("/patient/{id}", async (int id, IPatientService _patientService) =>
+app.MapGet("/patients/{id}", async (int id, IPatientService _patientService) =>
 {
     try
     {
@@ -104,7 +104,7 @@ app.MapGet("/patients/orders",async (IPatientService _patientService)=>{
     }
 });
 
-app.MapPatch("/patient/{id}/orders/date",async (int id,IPatientService _patientService)=>{
+app.MapPost("/patients/{id}/updateOrderDate",async (int id,IPatientService _patientService)=>{
     try{
         var patient = await _patientService.GetById(id);
         if(patient != null)
@@ -121,7 +121,7 @@ app.MapPatch("/patient/{id}/orders/date",async (int id,IPatientService _patientS
 });
 
 
-app.MapPost("/patient", async (Patient patient, IPatientService _patientService, IMedicationService _medicationsService,IGpPracticeService _gpService) =>
+app.MapPost("/patients", async (Patient patient, IPatientService _patientService, IMedicationService _medicationsService,IGpPracticeService _gpService) =>
 {
     try
     {
@@ -178,7 +178,7 @@ app.MapGet("/patients/search", async (string surname, IPatientService _patientSe
     }
 });
 
-app.MapPatch("/patient/{id}", async (int id, Patient updatedPatient, IPatientService _patientService, IMedicationService _medicationsService, IPatientMedicationService _patientMedicationService) =>
+app.MapPatch("/patients/{id}", async (int id, Patient updatedPatient, IPatientService _patientService, IMedicationService _medicationsService, IPatientMedicationService _patientMedicationService) =>
 {
     try
     {
