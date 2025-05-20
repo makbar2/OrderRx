@@ -267,11 +267,24 @@ app.MapGet("/medications", async (IMedicationService _medicationsService) =>
     }
 });
 
+app.MapGet("/medications/{id}", async (int id,IMedicationService _medicationsService) =>
+{
+    try
+    {
+        var medication = await _medicationsService.GetById(id);
+        return Results.Ok(medication);
+    }
+    catch (Exception error)
+    {
+        return Results.BadRequest(new { message = error.Message });
+    }
+});
+
 app.MapPost("/medications", async (Medication medication, IMedicationService _medicationsService) =>{
     try
     {
         await _medicationsService.Add(medication);
-        return Results.Ok(medication);
+        return Results.Created($"/medications/{medication.Id}", medication);
     }
     catch (Exception error)
     {

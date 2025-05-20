@@ -3,7 +3,6 @@ import Medication from "@/Interfaces/Medication";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -45,16 +44,6 @@ export default  function PatientMedication(
         try{
             if(medication)
             {
-                const response = await fetch(`https://localhost:7295/patient/${patientId}/medications`,{
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    method: "POST",
-                    body: JSON.stringify({
-                        id : medication.id
-                    })
-                });
-                const data = await response.json();
                 updatePatientMedication(patient,medication);
             }else{
                 throw ("unable to add a non-medication object to patient" );
@@ -65,7 +54,7 @@ export default  function PatientMedication(
         }
     }    
 
-    async function updatePatientMedication(patient : Patient, medication : Medication[]) 
+    async function updatePatientMedication(patient : Patient, medication : Medication[] |  Medication) 
     {
         let updatedPatient : Patient;
         if(Array.isArray(medication))
@@ -78,7 +67,10 @@ export default  function PatientMedication(
 
             updatedPatient = {
                 ...patient,
-                patientMedication: [...(patient.patientMedication || []), medication]
+                patientMedication: [
+                    ...((patient.patientMedication || []) as Medication[]),
+                    medication as Medication
+                ]
             };
         }
         setPatient(updatedPatient);
@@ -104,7 +96,9 @@ export default  function PatientMedication(
                                     <button type="button" className="cursor-pointer text-red-500 " onClick={()=> deleteMedication(patient.id,medication)}>Remove</button>
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ))
+                        //typescript error here becasue i have two types in one field, one can be Medication and the other can be Medication wrapper, medication is being used here
+                        }
                         <TableRow className="">
                             <TableCell className="">
                                 <MedicationSearch setNewMedication={setNewMedication} medicationList={medicationList} setMedicationList={setMedicationList} />

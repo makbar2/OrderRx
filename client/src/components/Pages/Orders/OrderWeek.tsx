@@ -1,11 +1,11 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState,} from "react";
 /**
  * memo is going to be used here, as 
  */
 import Patient from "../../../Interfaces/Patient";
 import PatientTable from "../../PatientTable";
 import formatDate from "@/utils/formatDate";
-import PatientMedication from "../PatientForm/PatientMedication";
+
 export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
 {
     const [patients, setPatients] = useState<Patient[]>([]);
@@ -26,12 +26,10 @@ export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.
             {   
                 const data = await response.json();
                 console.log(data);
-                const result: Patient[] = data.map(i => ({
+                const result: Patient[] = data.map((i : Patient) => ({
                     id: i.id,
                     firstName: i.firstName,
                     surname: i.surname,
-                    email: i.email,
-                    phoneNumber: i.phoneNumber,
                     address: i.address,
                     postcode: i.postcode,
                     dob: i.dob,
@@ -50,11 +48,11 @@ export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.
         }
         getOrders();
         
-    },[]);
+    },[setTitle]);
     return(
         <>
             <h1>This Weeks Orders</h1>
-            
+
             <PatientTable mode={1} patients={patients}  setPatients={setPatients} patientList={patients}/>
         </>
     );

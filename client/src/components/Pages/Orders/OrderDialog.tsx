@@ -1,4 +1,4 @@
-import { useEffect, useState} from "react";
+import {useState} from "react";
 import Patient from "../../../Interfaces/Patient";
 import Medication from "@/Interfaces/Medication";
 import FormAlert from "@/components/FormAlert";
@@ -14,7 +14,6 @@ import {
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -43,7 +42,7 @@ export default function OrderDialog({ patient, patientList, setPatients }: { pat
                 <DialogHeader>
                 <DialogTitle>View Order</DialogTitle>
                 <DialogDescription>
-                    Send an order for : {`${patient.firstName} ${patient.surname} : ${patient.dob}`}. 
+                    Send an order for : {`${patient.firstName} ${patient.surname} : ${patient.dob}`}
                    
                 </DialogDescription>
                 </DialogHeader>
@@ -51,10 +50,7 @@ export default function OrderDialog({ patient, patientList, setPatients }: { pat
                         responseMessage.message!== "" ? 
                     
                         <FormAlert type={responseMessage.type} message={responseMessage.message} />
-                        
                         : 
-                    
-                        
                         <div>
                             <h3>There medications are</h3>
                             <Table className="pl-2 table-fixed">
@@ -145,8 +141,7 @@ async function getMedications(setMedications : React.Dispatch<React.SetStateActi
             if(response.status === 200)
             {
                 const data = await response.json();
-    
-                const meds : Medication[] = data.map(i=> ({
+                const meds : Medication[] = data.map((i)=> ({
                     id : i.medication.id,
                     name : i.medication.name,
                 }));

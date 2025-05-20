@@ -1,7 +1,7 @@
 "use client"
 import Medication from "@/Interfaces/Medication"
 import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check, ChevronsUpDown, Plus } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -19,19 +19,26 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
+export function MedicationSearch({
+  medicationList,
+  setMedicationList,
+  setNewMedication,
+}: {
+  setNewMedication: React.Dispatch<React.SetStateAction<Medication | undefined>>
+  medicationList: Medication[] | undefined
+  setMedicationList: React.Dispatch<React.SetStateAction<Medication[]>>
+}) {
+  const [open, setOpen] = React.useState(false)
+  const [value, setValue] = React.useState("")
+  const [input, setInput] = React.useState("")
 
 
-export function MedicationSearch({medicationList,setMedicationList,setNewMedication}:
-  {
-    setNewMedication : React.Dispatch<React.SetStateAction<Medication | undefined>>//medication to be added to the patient 
-    medicationList : Medication[] | undefined,//list of all the medications that can be added
-    setMedicationList:React.Dispatch<React.SetStateAction<Medication[]>>//idk why this is here 
-  }
-)
-//todo add the abitlity to add new medications as in the ability to add medciations to the database from this component
-{
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const filteredMedications = medicationList?.filter((med) =>
+    med.name.toLowerCase().includes(input.toLowerCase())
+  ) || [];
+
+  const medicationExists = filteredMedications.some(med => med.name.toLowerCase() === input.toLowerCase());
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -39,38 +46,95 @@ export function MedicationSearch({medicationList,setMedicationList,setNewMedicat
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className=" w-[400px] justify-between"
+          className="w-[400px] justify-between"
         >
-          {value
-            ? medicationList?.find((medication) => medication.name === value)?.name
-            : "Select medication..."}
+          {value || "Select medication..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[400px] p-0">
         <Command>
-          <CommandInput placeholder="select a medication" />
+          <CommandInput
+            placeholder="Search or add medication"
+            value={input}
+            onValueChange={setInput}
+          />
           <CommandList>
-            <CommandEmpty>Unable to fetch medicatiion List</CommandEmpty>
-            <CommandGroup>
-              {
-                medicationList?.map((medication : Medication) =>(
-                  <CommandItem key={medication.id} value={medication.name} 
-                    onSelect={(currentValue)=> {
-                      setValue(currentValue === value ? "": currentValue);
-                      setNewMedication(medication);
-                      setOpen(false);
+            {filteredMedications.length === 0 ? (
+              <CommandEmpty>No medication found</CommandEmpty>
+            ) : (
+              <CommandGroup>
+                {filteredMedications.map((medication) => (
+                  <CommandItem
+                    key={medication.id}
+                    value={medication.name}
+                    onSelect={(currentValue) => {
+                      setValue(currentValue)
+                      setNewMedication(medication)
+                      setOpen(false)
                     }}
                   >
-                    <Check className={cn("mr-2 h-4 w-4", value === medication.name ? "opacity-100" : "opacity-0")} />
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === medication.name ? "opacity-100" : "opacity-0"
+                      )}
+                    />
                     {medication.name}
                   </CommandItem>
-                ))
-              }
-            </CommandGroup>
+                ))}
+              </CommandGroup>
+            )}
+            {!medicationExists && input.trim() !== "" && (
+              <CommandGroup>
+                <CommandItem onSelect={()=> {handleCreateNewMedication(input,setMedicationList,setNewMedication,setValue,setOpen)}}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add "{input}"
+                </CommandItem>
+              </CommandGroup>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
   )
 }
+
+
+async function handleCreateNewMedication(
+  input:string, 
+  setMedicationList :  React.Dispatch<React.SetStateAction<Medication[]>>,
+  setNewMedication :  React.Dispatch<React.SetStateAction<Medication | undefined>>,
+  setValue : React.Dispatch<React.SetStateAction<string>>,
+  setOpen :React.Dispatch<React.SetStateAction<boolean>>
+){
+    const newMedication: Medication = {
+      id:0,
+      name: input,
+    }
+    try{
+      const response = await fetch(`https://localhost:7295/medications`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        
+        },
+        body: JSON.stringify(newMedication)
+      });
+      if(response.status === 201)
+      {
+        const data = await response.json();
+        console.log(data);
+        setMedicationList(prev => [...(prev || []), data]);
+        setNewMedication(data);
+        setValue(input);
+        setOpen(false);
+      }else{
+        console.log("unable to create medication", response);
+      }
+    }catch(error)
+    {
+      console.log("unable to connect to backend");
+    }
+
+  }

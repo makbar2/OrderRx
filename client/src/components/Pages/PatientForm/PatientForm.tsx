@@ -114,7 +114,7 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
     },[patient.collectionDate,patient.orderFrequency,patient.orderDate])
     return(
         <>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} key={patient.id}>
                 <div className="pl-20 pr-10">
                     {responseMessage.type !== "" && <FormAlert type={responseMessage.type} message={responseMessage.message} />}
                     <div>
