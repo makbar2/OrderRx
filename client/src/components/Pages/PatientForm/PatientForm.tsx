@@ -93,10 +93,9 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
             {
                 setResponseMessage({ type: "success" , message: "Patient Successfully Created" });
             }
-            if(patient.collectionDate)
+            if(patient.orderDate)
             {
-
-                const dates = generateDates(patient.collectionDate,patient.orderFrequency);
+                const dates = generateDates(patient.orderDate,patient.orderFrequency);
                 setForecastedDates(dates);
             }
         }
@@ -160,10 +159,10 @@ export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React
                         <label>Collection Date</label>
                         <Input type="date" value={formatDate(patient.collectionDate)} onChange={handleInputChange} name="collectionDate"/>
                         <div>
-                            <h3>Forecasted Dates</h3>
+                            <h3>Forecasted Order Dates</h3>
                             {
                                 forecastedDates.map(date =>(
-                                    <p>{date}</p>
+                                    <p key={date}>{date}</p>
                                 ))
                             }
                         </div>

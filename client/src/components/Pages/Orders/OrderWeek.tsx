@@ -1,7 +1,5 @@
 import { useEffect, useState,} from "react";
-/**
- * memo is going to be used here, as 
- */
+import FormAlert from "@/components/FormAlert";
 import Patient from "../../../Interfaces/Patient";
 import PatientTable from "../../PatientTable";
 import formatDate from "@/utils/formatDate";
@@ -9,6 +7,10 @@ import formatDate from "@/utils/formatDate";
 export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
 {
     const [patients, setPatients] = useState<Patient[]>([]);
+    const [responseMessage, setResponseMessage] = useState({
+        type: "",
+        message: ""
+    }); 
     useEffect(()=>{
         const today = new Date();
         const day = String(today.getDate()).padStart(2, '0');
@@ -41,9 +43,17 @@ export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.
                 console.log(result);
             }else if(response.status === 404)
             {
-                console.log("no orders for this week");
+
+                setResponseMessage({
+                    type : "error",
+                    message : "There are no orders for this week"
+                });
             }else{
-                console.log("error in connecting to the api");
+                
+                setResponseMessage({
+                    type : "error",
+                    message : "Unable to connect to the backend"
+                });
             }
         }
         getOrders();
@@ -52,8 +62,12 @@ export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.
     return(
         <>
             <h1>This Weeks Orders</h1>
-
-            <PatientTable mode={1} patients={patients}  setPatients={setPatients} patientList={patients}/>
+            {
+                responseMessage.type !== "" ?
+                    <FormAlert type={responseMessage.type} message={responseMessage.message}/>
+                    :
+                    <PatientTable mode={1} patients={patients}  setPatients={setPatients} />
+            }
         </>
     );
 }
