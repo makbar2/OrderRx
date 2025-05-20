@@ -104,6 +104,23 @@ app.MapGet("/patients/orders",async (IPatientService _patientService)=>{
     }
 });
 
+app.MapPatch("/patient/{id}/orders/date",async (int id,IPatientService _patientService)=>{
+    try{
+        var patient = await _patientService.GetById(id);
+        if(patient != null)
+        {
+            var updatedPatient = await _patientService.updateDate(patient);
+            return Results.Ok(updatedPatient);
+        }else{
+            return Results.NotFound();
+        } 
+    }catch(Exception error)
+    {
+        return Results.BadRequest(new { message = error.Message });
+    }
+});
+
+
 app.MapPost("/patient", async (Patient patient, IPatientService _patientService, IMedicationService _medicationsService,IGpPracticeService _gpService) =>
 {
     try

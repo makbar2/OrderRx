@@ -12,6 +12,8 @@ public interface IPatientService
 
     Task<List<Patient>> getOrders(DateTime date);
 
+    Task <Patient> updateDate(Patient patient);//just increments the dates on the patient by the frequency
+
     Task<List<PatientMedication>> GetMedications(int id);
 
     Task<bool> Delete(int id);

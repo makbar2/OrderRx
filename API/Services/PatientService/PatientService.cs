@@ -82,6 +82,22 @@ public class PatientService : IPatientService
         return patients;
     }
 
+    public async Task <Patient> updateDate(Patient patient)
+    {
+        if(patient.OrderDate.HasValue && patient.OrderFrequency.HasValue && patient.CollectionDate.HasValue )
+        {
+            int daysToAdd = patient.OrderFrequency.Value;
+            patient.OrderDate = patient.OrderDate.Value.Date.AddDays(daysToAdd);
+            patient.CollectionDate = patient.CollectionDate.Value.AddDays(daysToAdd);
+            _context.Patients.Update(patient);
+            await _context.SaveChangesAsync();
+            return patient;
+
+        }else{
+            throw new Exception($"patient {patient.Id} doesnt have a value set for either orderdate : {patient.OrderDate}, order frequency : {patient.OrderFrequency} or collection date : {patient.CollectionDate}" );
+        }
+    }
+
     public async Task<List<PatientMedication>> GetMedications(int id)
     {
         var medications = await _context.Patients

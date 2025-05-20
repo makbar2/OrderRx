@@ -37,7 +37,7 @@ export default function OrderDialog({ patient }: { patient: Patient })
                     ()=>{
                         getMedications(setMedications,setResponseMessage,patient.id);
                     }
-                    }>Edit Profile</Button>
+                    }>View Orders</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -74,12 +74,36 @@ export default function OrderDialog({ patient }: { patient: Patient })
                         </div>
                     }
                 <DialogFooter>
-                    <Button type="submit">Save changes</Button>
+                    <Button type="submit">Order Sent</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
         </>
     );
+}
+
+async function sendOrder(setResponseMessage: React.Dispatch<React.SetStateAction<{ type: string; message: string }>>,patientId : number)
+{
+    /**
+     * send request to backend to update the collection and order date 
+     * delete the patient from the order list
+     */
+    try{
+
+    }catch(error)
+    {
+        setResponseMessage({
+                type:"error",
+                message : "Unable to access the endpoint"
+        })
+    }
+    const response = await fetch(`https://localhost:7295/patients/orders`, {
+        method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+    });
+    if(response === 200)
 }
 
 
@@ -93,7 +117,7 @@ async function getMedications(setMedications : React.Dispatch<React.SetStateActi
                     "Content-Type": "application/json",
                 },
             });
-            if(response.ok)
+            if(response.status === 200)
             {
                 const data = await response.json();
     
