@@ -7,7 +7,7 @@ public class DataContext : DbContext
     public DbSet<Medication> Medications { get; set; }
     public DbSet<GpPractice> GpPractices { get; set; }
     public DbSet<PatientMedication> PatientMedications { get; set; }
-    public DbSet<User> User { get; set; }
+
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -4,11 +4,11 @@ public static class PatientEndpoints
 
     public static void MapPatientEndpoints(this IEndpointRouteBuilder routes)
     {
-        routes.MapGet("/patients/{id}", async (int id, IPatientService service) =>
+        routes.MapGet("/patients/{id}", async (int id, IPatientService _patientService) =>
         {
             try
             {
-                var patient = await service.GetById(id);
+                var patient = await _patientService.GetById(id);
                 return Results.Ok(patient);
             }
             catch (Exception e)

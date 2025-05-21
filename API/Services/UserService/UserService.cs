@@ -9,54 +9,38 @@ public class UserService : IUserService
     }
     public async Task<User> Create(User user)
     {
-        _context.User.Add(user);
+        _context.Users.Add(user);
         await _context.SaveChangesAsync();
         return user;
     }
 
     public async Task Delete(User user)
     {
-        _context.User.Remove(user);
+        _context.Users.Remove(user);
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<User>> GetAll()
+    public async Task<List<User>> Get()
     {
-        return await _context.User.ToListAsync();
+        return await _context.Users.ToListAsync();
     }
 
-    public async Task<User> GetByEmail(string email)
+    public async Task<User?> GetByEmail(string email)
     {
-        var user = await _context.User.Where(
+        var user = await _context.Users.Where(
             u => u.Email.Contains(email)
         ).FirstOrDefaultAsync();
-        if(user == null)
-        {
-            throw new Exception("User with the email " + email + " not found");
-            }
         return user; 
     }
 
     public async Task<User> GetById(int id)
     {
-        var user = await _context.User.FindAsync(id);
+        var user = await _context.Users.FindAsync(id);
         if(user == null)
         {
             throw new KeyNotFoundException($"User with id {id} not found.");
         }
         return user;
-    }
-
-    public  async Task<User> GetByPhoneNumber(string phoneNumber)
-        {
-        var user = await _context.User.Where(
-            u => u.Email.Contains(phoneNumber)
-        ).FirstOrDefaultAsync();
-        if(user == null)
-            {
-            throw new Exception("User with the phone number " + phoneNumber + " not found");
-        }
-        return user; 
     }
 
     public Task Login()

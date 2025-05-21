@@ -10,7 +10,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IGpPracticeService, GpPracticeService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
-builder.Services.AddScoped<IPatientMedicationService,PatientMedicationService >();
+builder.Services.AddScoped<IPatientMedicationService, PatientMedicationService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // CORS Policy setup
 builder.Services.AddCors(options =>
@@ -53,6 +54,7 @@ app.MapPatientEndpoints();
 app.MapGpPracticesEndpoints();
 app.MapMedicationsEndpoints();
 app.MapPatientMedicationEndpoints();
+app.MapUserEndpoints();
 
 
 app.Run();
