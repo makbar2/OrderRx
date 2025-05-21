@@ -7,6 +7,8 @@ public class DataContext : DbContext
     public DbSet<Medication> Medications { get; set; }
     public DbSet<GpPractice> GpPractices { get; set; }
     public DbSet<PatientMedication> PatientMedications { get; set; }
+    public DbSet<User> User { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -18,7 +20,7 @@ public class DataContext : DbContext
     {
          modelBuilder.Entity<Patient>()
             .Property(p => p.DOB)
-            .HasConversion(new DateOnlyConverter());
+            .HasConversion(new DateOnlyConverter());//dont use dateonly ever again bro what you thinking 
 
         base.OnModelCreating(modelBuilder);
     }

@@ -49,89 +49,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Map API routes
+app.MapPatientEndpoints();
+app.MapGpPracticesEndpoints();
+app.MapMedicationsEndpoints();
+app.MapPatientMedicationEndpoints();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.MapGet("/medications", async (IMedicationService _medicationsService) =>
-{
-    try
-    {
-        var medications = await _medicationsService.Get();
-        return Results.Ok(medications);
-    }
-    catch (Exception error)
-    {
-        return Results.BadRequest(new { message = error.Message });
-    }
-});
-
-app.MapGet("/medications/{id}", async (int id,IMedicationService _medicationsService) =>
-{
-    try
-    {
-        var medication = await _medicationsService.GetById(id);
-        return Results.Ok(medication);
-    }
-    catch (Exception error)
-    {
-        return Results.BadRequest(new { message = error.Message });
-    }
-});
-
-app.MapPost("/medications", async (Medication medication, IMedicationService _medicationsService) =>{
-    try
-    {
-        await _medicationsService.Add(medication);
-        return Results.Created($"/medications/{medication.Id}", medication);
-    }
-    catch (Exception error)
-    {
-        return Results.BadRequest(new { message = error.Message });
-    }
-});
-
-
-
-
-
-
-app.MapPost("/gpSurgeries",async (GpPractice gp,IGpPracticeService _gpService) =>{
-    try
-    {
-        await _gpService.Add(gp);
-        return Results.Ok(gp);
-    }
-    catch (Exception error)
-    {
-        return Results.BadRequest(new { message = error.Message });
-    }
-});
-
-app.MapGet("/gpSurgeries", async (IGpPracticeService _gpService) =>
-{
-    try
-    {
-        var results = await _gpService.Get();
-        return Results.Ok(results);
-    }
-    catch (Exception error)
-    {
-        return Results.BadRequest(new { message = error.Message });
-    }
-});
 
 app.Run();
