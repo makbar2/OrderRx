@@ -29,11 +29,8 @@ public static class UserEndpoints
             }
         });
 
-        routes.MapPost("/login", async (User user,HttpContext context,IUserService _userService, IConfiguration _configuration) =>{
-            //{
-                //"email": "dave@gmail.com",
-              //  "password": "String102."
-            //}
+        routes.MapPost("/login", async (HttpContext context, User user, IUserService _userService, IConfiguration _configuration) =>
+        {
             try
             {
                 if (user == null || string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
@@ -56,9 +53,9 @@ public static class UserEndpoints
                 string token = CreateToken(userToCheck, _configuration);
                 var cookieOptions = new CookieOptions
                 {
-                    Secure = true,
                     SameSite = SameSiteMode.None,
                     HttpOnly = true,
+                    Secure = true, 
                     Expires = DateTime.UtcNow.AddDays(7)
                 };
 
@@ -94,11 +91,38 @@ public static class UserEndpoints
             }
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, workFactor: 10);
             await _userService.Create(user);
-            return Results.Created($"/users/{user.Id}",user);
+            return Results.Created($"/users/{user.Id}", user);
+        });
+
+
+        routes.MapGet("/auth/check", async (HttpContext context, IUserService _userService, IConfiguration _configuration) =>
+        {
+            try
+            {
+                var token = context.Request.Cookies["token"];
+                if (string.IsNullOrEmpty(token))
+                    return Results.Unauthorized();
+
+                var user = await ValidateTokenAsync(token, _userService, _configuration);
+                if (user is null)
+                    return Results.Unauthorized();
+
+                return Results.Ok(new { authenticated = true, user = new { user.Id, user.Email } });
+            }
+            catch
+            {
+                return Results.Unauthorized();
+            }
         });
 
 
     }
+
+
+
+
+
+
     private static string CreateToken(User user, IConfiguration _configuration)
     {
         List<Claim> claims = new List<Claim>
@@ -107,14 +131,54 @@ public static class UserEndpoints
             new Claim(ClaimTypes.Email, user.Email)
         };//basically a js object
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
-        var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature);
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
         var token = new JwtSecurityToken(
-            claims : claims,
+            claims: claims,
             expires: DateTime.Now.AddMinutes(45),
-            signingCredentials : creds
+            signingCredentials: creds
         );
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
         return jwt;
+    }
+    
+
+        private static async Task<User?> ValidateTokenAsync(string token, IUserService userService, IConfiguration configuration)
+    {
+        if (string.IsNullOrEmpty(token))
+            return null;
+
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = System.Text.Encoding.UTF8.GetBytes(configuration["AppSettings:Token"]!);
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+
+            if (validatedToken is JwtSecurityToken jwtToken &&
+                !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512Signature, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+
+            var userIdClaim = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+                              ?? principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+                return null;
+
+            return await userService.GetById(userId);
+        }
+        catch
+        {
+            return null;
+        }
     }
     
     

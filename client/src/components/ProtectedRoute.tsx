@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 /**
  * this just checks if the user has a token  and then lets them through, 
- * if not it would redirect them 
+ * if not it would
  */
 export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
     const token = localStorage.getItem("token"); // or check auth context

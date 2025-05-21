@@ -1,4 +1,5 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -11,11 +12,15 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { User } from "@/Interfaces/User";
+import { redirect } from "react-router-dom";
 export function LoginForm({className,...props}: React.ComponentProps<"div">) {
   const [user,setUser] = useState<User>({
     email: "",
     password: ""
   });
+
+  const navigate = useNavigate();
+
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) //i just took this from pt form
   {
@@ -24,6 +29,41 @@ export function LoginForm({className,...props}: React.ComponentProps<"div">) {
         ...prev,
         [name]: value,
       }));
+  }
+
+  
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>,user:User,setUser:React.Dispatch<React.SetStateAction<User>>) 
+  {
+    e.preventDefault();
+    try{
+      console.log(user);
+      const response = await fetch("https://localhost:7295/login", {
+        method: "POST",
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          Email: user.email,
+          Password : user.password
+        })
+      });
+      const data = await response.json();
+      if(response.status === 401)
+      {
+        console.log("password is incorrect");
+      }else if(response.status === 200)
+      {
+        console.log("succesful login");
+        navigate("/");
+      }else{
+        console.log("something bad happened when trying to connect ");
+      }
+    }catch(error)
+    {
+      console.log(`an exception was thrown when trying to submit the form ${error}`);
+    }
+
   }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -75,38 +115,3 @@ export function LoginForm({className,...props}: React.ComponentProps<"div">) {
   )
 }
 
-async function handleSubmit(e: React.FormEvent<HTMLFormElement>,user:User,setUser:React.Dispatch<React.SetStateAction<User>>) 
-{
-  e.preventDefault();
-  try{
-    console.log(user);
-    const response = await fetch("https://localhost:7295/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        Email: user.email,
-        Password : user.password
-      })
-    });
-    const data = await response.json();
-    if(response.status === 401)
-    {
-      console.log("password is incorrect");
-    }else if(response.status === 200)
-    {
-      console.log("succesful login");
-    }else{
-      console.log("something bad happened when trying to connect ");
-    }
-  }catch(error)
-  {
-    console.log(`an exception was thrown when trying to submit the form ${error}`);
-  }
-  // setUser(prev => ({
-  //   ...prev,
-  //   password: ""
-  // }));
-
-}
