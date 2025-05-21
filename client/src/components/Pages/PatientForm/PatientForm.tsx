@@ -16,7 +16,7 @@ import formatDate from "@/utils/formatDate";
 
 
 
-export default function PatientForm({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
+export default function PatientForm()
 { 
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();

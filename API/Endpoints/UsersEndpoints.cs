@@ -29,7 +29,11 @@ public static class UserEndpoints
             }
         });
 
-        routes.MapPost("/login", async (HttpContext context, User user,IUserService _userService, IConfiguration _configuration) =>{
+        routes.MapPost("/login", async (User user,HttpContext context,IUserService _userService, IConfiguration _configuration) =>{
+            //{
+                //"email": "dave@gmail.com",
+              //  "password": "String102."
+            //}
             try
             {
                 if (user == null || string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))

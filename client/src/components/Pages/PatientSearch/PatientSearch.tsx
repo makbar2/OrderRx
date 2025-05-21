@@ -3,7 +3,7 @@ import { useState ,useEffect } from "react";
 import PatientSearchBar from "./PatientSearchBar";
 import PatientTable from "../../PatientTable";
 
-export default function PatientSearch({ setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> }) {
+export default function PatientSearch() {
     useEffect(() => {
         setTitle("Patient Search");
     }, []);

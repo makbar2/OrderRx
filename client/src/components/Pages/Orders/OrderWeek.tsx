@@ -4,7 +4,7 @@ import Patient from "../../../Interfaces/Patient";
 import PatientTable from "../../PatientTable";
 import formatDate from "@/utils/formatDate";
 
-export default function OrderToday({setTitle}: {setTitle : React.Dispatch<React.SetStateAction<string>>})
+export default function OrderToday()
 {
     const [patients, setPatients] = useState<Patient[]>([]);
     const [responseMessage, setResponseMessage] = useState({
