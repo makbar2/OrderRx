@@ -1,5 +1,5 @@
 "use client"
-import Medication from "@/Interfaces/Medication"
+
 import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useEffect } from "react";

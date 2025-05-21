@@ -8,12 +8,12 @@ export default function MedicationsPage({ setTitle }: { setTitle: React.Dispatch
         setTitle("Patient Search");
     }, []);
     const [searchQuery,setSearchQuery] = useState("");
-    const [patients, setPatients] = useState<Patient[]>([]);
+    const [medications, setMedications] = useState<Medication[]>([]);
     return (
         <>
             <div className="pl-50 pr-50">
                 <div className="">
-                    <PatientSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} setPatients={setPatients} />
+                    <Me searchQuery={searchQuery} setSearchQuery={setSearchQuery} setPatients={setPatients} />
                 </div>
                 <div>
                     <PatientTable patients={patients} mode={0} />
@@ -22,4 +22,14 @@ export default function MedicationsPage({ setTitle }: { setTitle: React.Dispatch
             </div>
         </>
     );
+}
+
+async function getMedications()
+{
+    const response = await fetch(`https://localhost:7295/medications/search${query}`,{
+        method : "GET",
+        headers:{
+            "Content-Type": "application/json"
+        },
+    });
 }
