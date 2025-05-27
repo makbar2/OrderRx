@@ -91,7 +91,7 @@ public static class PatientEndpoints
             {
                 return Results.BadRequest(new { message = error.Message });
             }
-        });
+        }).RequireAuthorization();
 
         routes.MapPost("/patients", async (Patient patient, IPatientService _patientService, IMedicationService _medicationsService, IGpPracticeService _gpService) =>
         {
@@ -130,7 +130,7 @@ public static class PatientEndpoints
             {
                 return Results.BadRequest(new { message = error.Message });
             }
-        });
+        }).RequireAuthorization();
 
         routes.MapGet("/patients/search", async (string surname, IPatientService _patientService) =>
         {
@@ -147,7 +147,7 @@ public static class PatientEndpoints
             {
                 return Results.BadRequest(new { message = error.Message });
             }
-        });
+        }).RequireAuthorization();
 
 
         routes.MapPatch("/patients/{id}", async (int id, Patient updatedPatient, IPatientService _patientService, IMedicationService _medicationsService, IPatientMedicationService _patientMedicationService) =>
@@ -221,7 +221,7 @@ public static class PatientEndpoints
             {
                 return Results.BadRequest(new { message = ex.Message });
             }
-        });
+        }).RequireAuthorization();
 
     }
     

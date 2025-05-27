@@ -22,6 +22,7 @@ export default function OrderToday()
         async function getOrders() {
             const response = await fetch(`https://localhost:7295/patients/orders`, {
                 method: "GET",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },

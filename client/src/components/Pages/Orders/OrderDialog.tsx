@@ -93,7 +93,8 @@ async function sendOrder(
     try{
         const response = await fetch(`https://localhost:7295/patients/${patientId}/updateOrderDate`, {
             method: "POST",
-                headers: {
+            credentials: "include",
+            headers: {
                     "Content-Type": "application/json",
                 },
         });
@@ -134,6 +135,7 @@ async function getMedications(setMedications : React.Dispatch<React.SetStateActi
 
         const response = await fetch(`https://localhost:7295/patients/${patientId}/medications`, {
                 method: "GET",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },

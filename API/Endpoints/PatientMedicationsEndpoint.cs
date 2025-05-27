@@ -15,7 +15,7 @@ public static class PatientMedicationEndpoints
             {
                 return Results.BadRequest(new { message = e.Message });
             }
-        });
+        }).RequireAuthorization();
 
         routes.MapGet("/patientMedication/", async (int id, IPatientMedicationService service) =>
         {
@@ -28,7 +28,7 @@ public static class PatientMedicationEndpoints
             {
                 return Results.BadRequest(new { message = e.Message });
             }
-        });
+        }).RequireAuthorization();
     }
     
 }

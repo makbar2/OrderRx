@@ -190,12 +190,14 @@ async function fetchLists(setGpList:React.Dispatch<React.SetStateAction<GpPracti
 {
     const responseGp = await fetch(`https://localhost:7295/gpSurgeries`, {
         method: "GET",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
     });
     const responseMedication = await fetch(`https://localhost:7295/medications`, {
         method: "GET",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -218,6 +220,7 @@ async function fetchPatientDetails(id:string ,setPatient:React.Dispatch<React.Se
     try{
         const response = await fetch(`https://localhost:7295/patients/${id}`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -235,6 +238,7 @@ async function fetchPatientDetails(id:string ,setPatient:React.Dispatch<React.Se
 async function createPatient(patient: Patient) {
     const response = await fetch(`https://localhost:7295/patients/`, {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -250,6 +254,7 @@ async function createPatient(patient: Patient) {
 async function updatePatient(patient: Patient) {
     const response = await fetch(`https://localhost:7295/patients/${patient.id}`, {
         method: "PATCH",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },

@@ -12,7 +12,7 @@ public static class GpPracticesEndpoints
             {
             return Results.BadRequest(new { message = error.Message });
             }
-        });
+        }).RequireAuthorization();
 
         routes.MapGet("/gpSurgeries", async (IGpPracticeService _gpService) =>
         {
@@ -25,6 +25,6 @@ public static class GpPracticesEndpoints
             {
                 return Results.BadRequest(new { message = error.Message });
             }
-        });
+        }).RequireAuthorization();
     }
 }

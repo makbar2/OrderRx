@@ -39,6 +39,7 @@ export default function GpSurgeries() {
                 headers: {
                     "Content-Type": "application/json"
                 },
+                credentials: "include",
                 body: JSON.stringify({
                     Name: gp.name,
                     Address: gp.address,

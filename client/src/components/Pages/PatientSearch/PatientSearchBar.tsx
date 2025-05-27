@@ -58,6 +58,7 @@ async function getResults(searchTerm:string):Promise<Patient[]>
     }
     const response = await fetch(`https://localhost:7295/patients/search${query}`,{
         method : "GET",
+        credentials: "include",
         headers:{
             "Content-Type": "application/json"
         },

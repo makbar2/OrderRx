@@ -115,6 +115,7 @@ async function handleCreateNewMedication(
     try{
       const response = await fetch(`https://localhost:7295/medications`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         

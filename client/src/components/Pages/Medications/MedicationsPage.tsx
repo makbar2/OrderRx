@@ -31,5 +31,6 @@ async function getMedications()
         headers:{
             "Content-Type": "application/json"
         },
+        credentials: "include",
     });
 }
