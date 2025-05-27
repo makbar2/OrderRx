@@ -9,6 +9,7 @@ import PatientForm from "@/components/Pages/PatientForm/PatientForm";
 import LoginPage from "@/components/Pages/Login/LoginPage";
 import Dashboard from './components/Pages/Dashboard';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { DashboardTitleContext } from './contexts/DashboardTitleContext';
 
 function App() {
 
@@ -35,4 +36,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

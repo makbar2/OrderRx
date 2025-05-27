@@ -13,6 +13,7 @@ import GpSearch from "./GpSearch";
 import { Textarea } from "@/components/ui/textarea";
 import FormAlert from "@/components/FormAlert";
 import formatDate from "@/utils/formatDate";
+import { useTitle } from "@/contexts/DashboardTitleContext";
 
 
 
@@ -35,6 +36,7 @@ export default function PatientForm()
         orderFrequency: 0,
         active: false,
     });
+    const setTitle = useTitle();
     const[medicationList, setMedicationList] = useState<Medication[]>([]);
     const[gpList, setGpList] = useState<GpPractice[]>([]);
     const [forecastedDates,setForecastedDates] = useState<string[]>([]);
@@ -46,7 +48,6 @@ export default function PatientForm()
         message: ""
     }); 
 
-
     function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) 
     {
         const { name, value } = e.target;
@@ -56,8 +57,6 @@ export default function PatientForm()
         }));
     }
 
-
-    
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const newPatient = wrapMedication(patient);
@@ -83,7 +82,7 @@ export default function PatientForm()
     }
     
     useEffect(()=>{
-        setTitle("Patient Info");
+        setTitle("Patient Form ");
         fetchLists(setGpList,setMedicationList);
         if(id) 
         {
@@ -100,7 +99,7 @@ export default function PatientForm()
                 //.dwadad
             }
         }
-    },[])
+    },[setTitle]);
 
     useEffect(()=>{
         if(patient.collectionDate)

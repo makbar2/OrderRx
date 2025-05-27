@@ -3,10 +3,12 @@ import FormAlert from "@/components/FormAlert";
 import Patient from "../../../Interfaces/Patient";
 import PatientTable from "../../PatientTable";
 import formatDate from "@/utils/formatDate";
+import { useTitle } from "@/contexts/DashboardTitleContext";
 
 export default function OrderToday()
 {
     const [patients, setPatients] = useState<Patient[]>([]);
+    const setTitle = useTitle();
     const [responseMessage, setResponseMessage] = useState({
         type: "",
         message: ""
@@ -16,7 +18,7 @@ export default function OrderToday()
         const day = String(today.getDate()).padStart(2, '0');
         const month = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         const year = today.getFullYear();
-        setTitle(`Orders for  ${day}-${month}-${year}`)
+        setTitle(`Orders for  ${day}-${month}-${year}`);
         async function getOrders() {
             const response = await fetch(`https://localhost:7295/patients/orders`, {
                 method: "GET",

@@ -2,13 +2,15 @@ import Patient from "../../../Interfaces/Patient";
 import { useState ,useEffect } from "react";
 import PatientSearchBar from "./PatientSearchBar";
 import PatientTable from "../../PatientTable";
+import { useTitle } from "@/contexts/DashboardTitleContext";
 
 export default function PatientSearch() {
-    useEffect(() => {
-        setTitle("Patient Search");
-    }, []);
     const [searchQuery,setSearchQuery] = useState("");
     const [patients, setPatients] = useState<Patient[]>([]);
+    const setTitle = useTitle();
+    useEffect(() => {
+        setTitle("Patient Search");
+    }, [setTitle]);
     return (
         <>
             <div className="pl-50 pr-50">

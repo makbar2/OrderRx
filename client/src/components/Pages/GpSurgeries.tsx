@@ -1,8 +1,9 @@
 import { Input } from "@/components/ui/input";
 import GpPractice from "@/Interfaces/GpPractice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import FormAlert from "../FormAlert";
+import { useTitle } from "@/contexts/DashboardTitleContext";
 
 export default function GpSurgeries() {
     const [gp, setGp] = useState<GpPractice>({
@@ -12,6 +13,7 @@ export default function GpSurgeries() {
         phoneNumber: ""
     });
 
+    const setTitle = useTitle();
     const [responseMessage, setResponseMessage] = useState({
         type: "",
         message: ""
@@ -69,6 +71,9 @@ export default function GpSurgeries() {
         }
     }
 
+    useEffect(()=>{
+        setTitle("Add a gp Surgery");
+    },[setTitle]);
     return (
         <>
             <h1>Add a Surgery</h1>
