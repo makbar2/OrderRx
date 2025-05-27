@@ -118,11 +118,7 @@ public static class UserEndpoints
 
     }
 
-
-
-
-
-
+    
     private static string CreateToken(User user, IConfiguration _configuration)
     {
         List<Claim> claims = new List<Claim>

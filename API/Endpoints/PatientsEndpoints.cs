@@ -28,7 +28,7 @@ public static class PatientEndpoints
             {
                 return Results.BadRequest(new { message = error.Message });
             }
-        });
+        }).RequireAuthorization();
 
         routes.MapGet("/patients/{id}/medications", async (int id, IPatientService _patientService) =>
         {
@@ -70,7 +70,7 @@ public static class PatientEndpoints
             {
                 return Results.BadRequest(new { message = error.Message });
             }
-        });
+        }).RequireAuthorization();
 
         routes.MapPost("/patients/{id}/updateOrderDate", async (int id, IPatientService _patientService) =>
         {
