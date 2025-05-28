@@ -12,8 +12,8 @@ Pharmacy staff were using spreadsheets to track which patients were due for pres
 ## ✨ Features
 
 - Dashboard overview showing patients due for orders by week
-- Full CRUD operations for managing patients and medication schedules
-- Real-time visibility into upcoming and overdue prescription orders
+- Full CRUD operations for managing patients and medications
+- Real-time visibility into upcoming prescription orders
 - Responsive and clean UI for in-pharmacy usage
 
 ---

@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Mail;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 public interface IEmailService
 {
     void SendHtmlEmail(Patient patient);
@@ -20,6 +22,7 @@ public class EmailService : IEmailService
     {
         try
         {
+            string medicationList = createMedicationList(patient);
             var email = _config["EmailSettings:Sender"];
             var password = _config["EmailSettings:Password"];
             if (email == null || password == null)
@@ -43,8 +46,8 @@ public class EmailService : IEmailService
                         <p><strong>Date of Birth:</strong> {patient.DOB}</p>
                         <p><strong>Address:</strong> {patient.Address}</p>
                         <hr style=""border: none; border-top: 1px solid #ddd; margin: 20px 0;"" />
-                        <p><strong>Medication Requested:</strong></p>
-                        <!-- Add your medication details here -->
+                        <p><strong>The medications we would like to request are:</strong></p>
+                        {medicationList}
                     </body>
                 </html>";
             mail.To.Add("moakbar202@gmail.com");//this would be the gp's email, however this is for tessing purposes 
@@ -52,13 +55,22 @@ public class EmailService : IEmailService
         }
         catch (Exception error)
         {
-            Console.WriteLine(error); // Temporary, better to use a logging framework
+            Console.WriteLine(error);
             throw;
         }
     }
 
     private string createMedicationList(Patient patient)
     {
-        
+        if (patient.patientMedication == null)
+        {
+            throw new Exception("This patient has no medications on their record, we can't send a request with no medication, waste of resources");
+        }
+        String medicationList = "";
+        foreach (PatientMedication pm in patient.patientMedication)
+        {
+            medicationList = medicationList + "" + $"<li>{pm.Medication.Name}</li>";
+        }
+        return $"<ul>{medicationList}</ul>";
     }
 }
