@@ -55,7 +55,7 @@ public static class UserEndpoints
                 {
                     SameSite = SameSiteMode.None,
                     HttpOnly = true,
-                    Secure = true, 
+                    Secure = true,
                     Expires = DateTime.UtcNow.AddDays(7)
                 };
 
@@ -113,6 +113,19 @@ public static class UserEndpoints
             {
                 return Results.Unauthorized();
             }
+        });
+        
+        routes.MapPost("/logout", (HttpResponse response) =>
+        {
+            response.Cookies.Append("token", "", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,        
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UnixEpoch, 
+                Path = "/"
+            });
+            return Results.Ok(new { message = "Logged out" });
         });
 
 
