@@ -41,7 +41,7 @@ public static class MedicationsEndpoints
             }
         }).RequireAuthorization();
 
-        routes.MapPost("/medications/search", async (string query, IMedicationService _medicationService) =>
+        routes.MapGet("/medications/search", async (string query, IMedicationService _medicationService) =>
         {
             try
             {

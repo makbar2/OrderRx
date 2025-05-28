@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Mail;
 using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Bcpg.OpenPgp;
 public interface IEmailService
 {
     void SendHtmlEmail(Patient patient);
@@ -48,6 +47,7 @@ public class EmailService : IEmailService
                         <hr style=""border: none; border-top: 1px solid #ddd; margin: 20px 0;"" />
                         <p><strong>The medications we would like to request are:</strong></p>
                         {medicationList}
+                        <p><strong>This email would have gone to {patient.Gp.Email} on a live system</strong>
                     </body>
                 </html>";
             mail.To.Add("moakbar202@gmail.com");//this would be the gp's email, however this is for tessing purposes 
