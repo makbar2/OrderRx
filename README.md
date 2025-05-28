@@ -42,3 +42,24 @@ Pharmacy staff were using spreadsheets to track which patients were due for pres
 ```bash
 git clone https://github.com/makbar2/orderrx.git
 cd orderrx
+
+
+### 2. Configure appsettings.json
+
+```{
+  "AppSettings":{
+    "Token" : < Your token> // this needs to be like 64 bytes long, i had an issue with this and i had to add  a bunch of stuff to it 
+  },
+  "EmailSettings":{
+    "Sender" : <Your email address>,
+    "Password" : <Your passowrd>
+
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}```
