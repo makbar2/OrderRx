@@ -174,21 +174,23 @@ public static class PatientEndpoints
                 // loop through new list 
                 // if it pm doesnt exist in new  list remove it from the exiting patient
                 var newPatientMedication = new List<PatientMedication>();
-                if(existingPatient.patientMedication != null)
+                if (existingPatient.patientMedication != null)
                 {
                     Dictionary<int, int> oldMedications = new Dictionary<int, int>();
                     //if found then set value to 1, if not 0, if key doesnt exist create new pm, if value doesnt exist remove pm
-                    foreach(PatientMedication pm in existingPatient.patientMedication)
+                    foreach (PatientMedication pm in existingPatient.patientMedication)
                     {
-                        oldMedications.Add(pm.Medication.Id,0);
+                        oldMedications.Add(pm.Medication.Id, 0);
                     }
-                    foreach(PatientMedication pm in updatedPatient.patientMedication)
+                    foreach (PatientMedication pm in updatedPatient.patientMedication)
                     {
-                        if(oldMedications.ContainsKey(pm.Medication.Id))
+                        if (oldMedications.ContainsKey(pm.Medication.Id))
                         {
                             oldMedications[pm.Medication.Id] = 1;
-                        }else{
-                            var fetchedMedication = await  _medicationsService.GetById(pm.Medication.Id);
+                        }
+                        else
+                        {
+                            var fetchedMedication = await _medicationsService.GetById(pm.Medication.Id);
                             var newPm = new PatientMedication//creating a new relation row
                             {
                                 Medication = fetchedMedication,
@@ -199,11 +201,11 @@ public static class PatientEndpoints
                             newPatientMedication.Add(newPm);
                         }
                     }
-                    foreach(KeyValuePair<int,int> pair in oldMedications)//deletion
+                    foreach (KeyValuePair<int, int> pair in oldMedications)//deletion
                     {
-                        if(pair.Value == 0)
+                        if (pair.Value == 0)
                         {
-                            await _patientMedicationService.DeleteByIds(existingPatient.Id,pair.Key);
+                            await _patientMedicationService.DeleteByIds(existingPatient.Id, pair.Key);
                             //cba passing in the patientmedication id, long to implement this is faster do implement
                         }
                     }
@@ -211,7 +213,7 @@ public static class PatientEndpoints
                 await _patientService.Update(existingPatient);
                 //i am going to assume that the orm is going to need to be specifically add and delete pm objects as 
                 //as it might think all the pms' are new
-                foreach(PatientMedication pm in newPatientMedication)
+                foreach (PatientMedication pm in newPatientMedication)
                 {
                     await _patientMedicationService.Add(pm);
                 }
@@ -222,6 +224,29 @@ public static class PatientEndpoints
                 return Results.BadRequest(new { message = ex.Message });
             }
         }).RequireAuthorization();
+
+        routes.MapPost("/patients/{id}/send", async (int id, IPatientService _patientService, IEmailService _emailService)=>
+        {
+            try
+            {
+
+                Patient patient = await _patientService.GetById(id);
+                if (patient == null)
+                {
+                    throw new KeyNotFoundException($"Patient with ID {id} not found.");
+                }
+                _emailService.SendHtmlEmail(patient);
+                return Results.Ok("email sent");
+            }
+            catch (Exception error)
+            {
+                return Results.BadRequest(new { message = error.Message });
+            }
+
+            //send an email
+        });
+
+
 
     }
     

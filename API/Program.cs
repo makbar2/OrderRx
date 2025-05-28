@@ -13,6 +13,7 @@ builder.Services.AddScoped<IGpPracticeService, GpPracticeService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IPatientMedicationService, PatientMedicationService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // CORS Policy setup
 builder.Services.AddCors(options =>
