@@ -1,5 +1,6 @@
-import { Calendar, Home, Inbox, Search, Settings, User } from "lucide-react"
+import { Calendar, Home, Hospital, Inbox, Pill, Search, Settings, User } from "lucide-react"
 import { Link } from "react-router-dom"
+import { Button } from "./ui/button"
 import {
   Sidebar,
   SidebarContent,
@@ -19,18 +20,24 @@ const items = [
   {
     title: "Patients",
     url: "/patients",
-    icon: User,
+    icon: Search,
   },
   {
     title: "Gp Surgeries",
     url: "/gp",
+    icon: Hospital,
+  },
+  {
+    title: "Add a  Patient",
+    url: "/patients/new",
     icon: User,
   },
   {
-    title: "New Patient",
-    url: "/patients/new",
-    icon: User,
+    title: "Medications",
+    url: "/medications",
+    icon: Pill,
   }
+
 ]
 
 export function AppSidebar() {
@@ -52,6 +59,31 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarContent>
+      <div  className="p-8 ">
+        <Button  onClick={() => { logout() }}>
+          Logout
+        </Button>
+      </div>
     </Sidebar>
   )
+}
+
+
+async function logout() {
+  try{
+    const response = await fetch("https://localhost:7295/logout", {
+      method: "POST", 
+      credentials: 'include',
+    });
+    if(response.status === 200)
+    {
+      console.log("user logged out")
+    }else{
+      const data = await response.json();
+      console.log(data);
+    }
+  }catch(error)
+  {
+    console.log(error);
+  }
 }

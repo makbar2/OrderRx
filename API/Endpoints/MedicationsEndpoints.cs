@@ -15,7 +15,7 @@ public static class MedicationsEndpoints
             }
         }).RequireAuthorization();
 
-        routes.MapGet("/medications/{id}", async (int id,IMedicationService _medicationsService) =>
+        routes.MapGet("/medications/{id}", async (int id, IMedicationService _medicationsService) =>
         {
             try
             {
@@ -28,7 +28,8 @@ public static class MedicationsEndpoints
             }
         });
 
-        routes.MapPost("/medications", async (Medication medication, IMedicationService _medicationsService) =>{
+        routes.MapPost("/medications", async (Medication medication, IMedicationService _medicationsService) =>
+        {
             try
             {
                 await _medicationsService.Add(medication);
@@ -39,6 +40,24 @@ public static class MedicationsEndpoints
                 return Results.BadRequest(new { message = error.Message });
             }
         }).RequireAuthorization();
+
+        routes.MapPost("/medications/search", async (string query, IMedicationService _medicationService) =>
+        {
+            try
+            {
+                if (query.Length < 3)
+                {
+                    throw new Exception("Please provide more than two characters");
+                }
+                var medications = await _medicationService.GetByName(query);
+                return Results.Ok(medications);
+            }
+            catch (Exception error)
+            {
+                return Results.BadRequest(new { message = error.Message });
+            }
+        });
+            
 
     }
 }

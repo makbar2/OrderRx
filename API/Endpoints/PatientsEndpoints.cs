@@ -1,4 +1,7 @@
 
+using System.Globalization;
+using System.Text.RegularExpressions;
+
 public static class PatientEndpoints
 {
 
@@ -132,15 +135,24 @@ public static class PatientEndpoints
             }
         }).RequireAuthorization();
 
-        routes.MapGet("/patients/search", async (string surname, IPatientService _patientService) =>
+        routes.MapGet("/patients/search", async (string query, IPatientService _patientService) =>
         {
             try
             {
-                if (surname.Length < 3)
+                List<Patient> patients;
+                if (query.Length < 3)
                 {
                     throw new Exception("Please provide more than two characters");
                 }
-                var patients = await _patientService.GetBySurname(surname);
+                if (checkIfDate(query) == true)
+                {
+                    DateTime date = DateTime.ParseExact(query, "dd/MM/yyyy",CultureInfo.InvariantCulture);
+                    patients = await _patientService.GetByDob(date);
+                }
+                else
+                {
+                    patients = await _patientService.GetBySurname(query);
+                }
                 return Results.Ok(patients);
             }
             catch (Exception error)
@@ -225,7 +237,7 @@ public static class PatientEndpoints
             }
         }).RequireAuthorization();
 
-        routes.MapPost("/patients/{id}/send", async (int id, IPatientService _patientService, IEmailService _emailService)=>
+        routes.MapPost("/patients/{id}/send", async (int id, IPatientService _patientService, IEmailService _emailService) =>
         {
             try
             {
@@ -249,7 +261,12 @@ public static class PatientEndpoints
 
 
     }
-    
+
+    private static bool checkIfDate(string input)
+    {
+        string pattern = @"^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/([0-9]{4})$";
+        return Regex.IsMatch(input, pattern);
+    }
     
 
 

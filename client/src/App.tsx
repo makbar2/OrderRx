@@ -9,6 +9,7 @@ import PatientForm from "@/components/Pages/PatientForm/PatientForm";
 import LoginPage from "@/components/Pages/Login/LoginPage";
 import Dashboard from './components/Pages/Dashboard';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import MedicationsPage from './components/Pages/Medications/MedicationsPage';
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
               <Route path="/patients/new" element={<PatientForm  />}/>
               <Route path="/gp" element={<GpSurgeries />}/>
               <Route path="/patients/:id" element={<PatientForm/>} />
+              <Route path='/medications' element={<MedicationsPage/>} />
             </Route>
         </Routes>
       </BrowserRouter>

@@ -3,9 +3,8 @@ import { useState ,useEffect } from "react";
 import PatientSearchBar from "./PatientSearchBar";
 import PatientTable from "../../PatientTable";
 
-export default function MedicationsPage({ setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> }) {
+export default function MedicationsPage() {
     useEffect(() => {
-        setTitle("Patient Search");
     }, []);
     const [searchQuery,setSearchQuery] = useState("");
     const [medications, setMedications] = useState<Medication[]>([]);

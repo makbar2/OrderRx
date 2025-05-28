@@ -70,7 +70,8 @@ export default function OrderDialog({ patient, patientList, setPatients }: { pat
                         </div>
                     }
                 <DialogFooter>
-                    <Button type="button" onClick={()=> {sendOrder(setResponseMessage,patient.id,setPatients,patientList)}}>Order Sent</Button>
+                    <Button type="button" onClick={()=> {sendOrder(setResponseMessage,patient.id,setPatients,patientList)}}>Prescription Received</Button>
+                    <Button type="button" onClick={()=>{sendRequest(setResponseMessage,patient.id)}}>Send Request</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -78,9 +79,45 @@ export default function OrderDialog({ patient, patientList, setPatients }: { pat
     );
 }
 
+async function sendRequest(
+    setResponseMessage : React.Dispatch<React.SetStateAction<{ type: string; message: string }>>,
+    patientId:number
+) {
+    try{
+        const response = await fetch(`https://localhost:7295/patients/${patientId}/send`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                    "Content-Type": "application/json",
+                },
+        });
+        const data = await response.json();
+        if(response.status === 200)
+        {
+           setResponseMessage({
+                type : "success",
+                message : "A request was successfully sent to their gp, please await for the prescription to come before clicking order received"
+            })
+        }else{
+            setResponseMessage({
+                type : "error",
+                message : data.message
+            })
+        }
+    }catch(error)
+    {
+        setResponseMessage({
+                type:"error",
+                message : "Unable to access the endpoint " + error
+        })
+    }
+}
+
+
 async function sendOrder(
     setResponseMessage: React.Dispatch<React.SetStateAction<{ type: string; message: string }>>,
-    patientId : number,setPatients : React.Dispatch<React.SetStateAction<Patient[]>>, 
+    patientId : number,
+    setPatients : React.Dispatch<React.SetStateAction<Patient[]>>, 
     patients : Patient[]
 )
 {

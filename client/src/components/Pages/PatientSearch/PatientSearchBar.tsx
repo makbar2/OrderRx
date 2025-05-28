@@ -38,25 +38,7 @@ export default function PatientSearch(
 async function getResults(searchTerm:string):Promise<Patient[]>
 {
     const result: Patient[] = [];
-    let query = "";
-    const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
-    if(dateRegex.test(searchTerm) === true)
-    {
-        const stringArray = searchTerm.split("/");
-        searchTerm = "";
-        let count = stringArray.length-1;
-        while(count >= 0)
-        {
-           searchTerm = `${searchTerm}${stringArray[count]}%2F`;
-           count = count -1;
-        }
-        searchTerm = searchTerm.slice(0,-3); 
-
-        query = `?dob=${searchTerm}`;
-    }else{
-        query = `?surname=${searchTerm}`;
-    }
-    const response = await fetch(`https://localhost:7295/patients/search${query}`,{
+    const response = await fetch(`https://localhost:7295/patients/search?query=${searchTerm}`,{
         method : "GET",
         credentials: "include",
         headers:{

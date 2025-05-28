@@ -1,7 +1,7 @@
-using System;
-using System.Diagnostics;
+
 using System.Net;
 using System.Net.Mail;
+using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 public interface IEmailService
 {
@@ -62,7 +62,7 @@ public class EmailService : IEmailService
 
     private string createMedicationList(Patient patient)
     {
-        if (patient.patientMedication == null)
+        if (patient.patientMedication.IsNullOrEmpty())
         {
             throw new Exception("This patient has no medications on their record, we can't send a request with no medication, waste of resources");
         }
