@@ -1,4 +1,4 @@
-# OrderRX – Prescription Reordering Web App
+# OrderRX – Prescription Ordering Web App
 
 OrderRX is a full-stack web application built for a pharmacy to manage recurring prescription orders. It replaces an outdated Excel-based workflow with a structured, web-based dashboard that improves visibility, reduces errors, and enhances staff efficiency.
 ---
