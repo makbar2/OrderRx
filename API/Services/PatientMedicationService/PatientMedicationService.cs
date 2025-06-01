@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 public class PatientMedicationService : IPatientMedicationService
 {
     private readonly DataContext _context;
@@ -50,5 +51,23 @@ public class PatientMedicationService : IPatientMedicationService
         _context.PatientMedications.Remove(pm);
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<List<PatientMedicationDto>> getMedicationRelations(int medicationId)
+    {
+        var pms = await _context.PatientMedications
+            .Where(i => i.MedicationId == medicationId)
+            .Select(pm => new PatientMedicationDto
+            {
+                PatientId = pm.PatientId,
+                FirstName = pm.Patient.FirstName,
+                Surname = pm.Patient.Surname,
+                DOB = pm.Patient.DOB.ToDateTime(TimeOnly.MinValue),//never using date only ever again
+                
+                Medication = pm.Medication
+            })
+            .ToListAsync();
+        return pms;
+        
     }
 }

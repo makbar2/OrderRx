@@ -6,8 +6,10 @@ public interface IPatientMedicationService
     Task<PatientMedication> Add(PatientMedication patientMedication);
     Task<bool> Delete(int patientMedicationId);
 
-    Task<bool> DeleteByIds(int patientId,int medicationId);
+    Task<bool> DeleteByIds(int patientId, int medicationId);
 
-    Task<PatientMedication?> checkExists(PatientMedication patientMedication);
+    Task<PatientMedication?> checkExists(PatientMedication patientMedication);//? why do i have this 
+
+    Task<List<PatientMedicationDto>> getMedicationRelations(int medicationId);
 }
 

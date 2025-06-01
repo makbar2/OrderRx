@@ -20,6 +20,8 @@ public class MedicationService :IMedicationService
     public async Task<bool> Delete(int id)
     {
         var medication = await _context.Medications.FirstAsync(i => i.Id == id) ?? throw new Exception($"Unable to find a medication with the id : {id}");
+        _context.Medications.Remove(medication);
+        await _context.SaveChangesAsync();
         return true;
     }
 
