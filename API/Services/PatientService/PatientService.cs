@@ -28,17 +28,37 @@ public class PatientService : IPatientService
         return patients;
     }
 
-    public async Task<Patient> GetById(int id)
+    public async Task<PatientDto> GetById(int id)
     {
         //Patient patient = await _context.Patients.Include(p=> p.patientMedication).FirstOrDefaultAsync(p => p.Id == id);
-        Patient patient = await _context.Patients
-        .Include(p => p.Gp)
-        .Include(p=> p.patientMedication).ThenInclude(pm=> pm.Medication)
-        .FirstOrDefaultAsync(p => p.Id == id);
-        //Patient patient = await _context.Patient.FindAsync(id);
-        if(patient == null)
+        // Patient patient = await _context.Patients
+        // .Include(p => p.Gp)
+        // .Include(p=> p.patientMedication).ThenInclude(pm=> pm.Medication)
+        // .FirstOrDefaultAsync(p => p.Id == id);
+        PatientDto? patient = await _context.Patients.Where(p => p.Id == id)
+        .Select(p => new PatientDto
         {
-            throw new Exception("Patient not found with the id : "+id);
+            Id = p.Id,
+            FirstName = p.FirstName,
+            Surname = p.Surname,
+            DOB = p.DOB,
+            Address = p.Address,
+            Postcode = p.Postcode,
+            Notes = p.Notes,
+            Gp = p.Gp,
+            Medications = p.patientMedication != null
+                ? p.patientMedication.Select(pm => new Medication
+                {
+                    Id = pm.MedicationId,
+                    Name = pm.Medication.Name
+                }).ToList()
+                : new List<Medication>()
+                //if the user has no medications in their record then create an empty list
+        }).FirstOrDefaultAsync();
+        //Patient patient = await _context.Patient.FindAsync(id);
+        if (patient == null)
+        {
+            throw new Exception("Patient not found with the id : " + id);
         }
         return patient;
     }
