@@ -7,6 +7,10 @@ public class PatientDto
     public string Address { get; set; }
     public string Postcode { get; set; }
     public string? Notes { get; set; }
+    public int? OrderFrequency {get;set;}
+    public bool? Active {get; set;}
+    public DateTime? CollectionDate {get ;set;}
+    public DateTime? OrderDate {get ;set;}
     public GpPractice? Gp { get; set; } // assuming Gp.Name exists
     public List<Medication> Medications { get; set; }
 }

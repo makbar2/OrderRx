@@ -61,15 +61,11 @@ public static class MedicationsEndpoints
             }
         });
 
-        routes.MapPost("/medications/delete/{id}", async (int id,IMedicationService _medicationsService, IPatientMedicationService _patientMedicationService) =>
+        routes.MapPost("/medications/delete/{id}", async (int id, IMedicationService _medicationsService, IPatientMedicationService _patientMedicationService) =>
         {
             try
             {
                 var medication = await _medicationsService.GetById(id);
-                if (medication == null)
-                {
-                    return Results.NotFound(new { message = $"No medication found with ID {id}" });
-                }
                 List<PatientMedicationDto> relations = await _patientMedicationService.getMedicationRelations(id);
                 if (relations == null || relations.Count == 0)
                 {
@@ -84,7 +80,26 @@ public static class MedicationsEndpoints
             }
             catch (Exception error)
             {
-               
+
+                return Results.BadRequest(new { message = error.Message });
+            }
+        });
+
+        routes.MapPatch("/medications/edit/{id}", async (int id, Medication updatedMedication, IMedicationService _medicationsService, IPatientMedicationService _patientMedicationService) =>
+        {
+            try
+            {
+                var existingMedication = await _medicationsService.GetById(id);
+                existingMedication.Name = existingMedication.Name ?? updatedMedication.Name;
+                await _medicationsService.Update(existingMedication);
+                return Results.Ok(existingMedication);
+            }
+            catch (InvalidOperationException)
+            {
+                return Results.BadRequest(new { message = $"unable to find a medication with the id of {id}" });
+            }
+            catch (Exception error)
+            {
                 return Results.BadRequest(new { message = error.Message });
             }
         });

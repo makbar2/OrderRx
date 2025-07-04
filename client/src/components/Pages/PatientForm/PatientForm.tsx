@@ -226,6 +226,7 @@ async function fetchPatientDetails(id:string ,setPatient:React.Dispatch<React.Se
             },
         });
         const data = await response.json();
+
         setPatient(formatPatient(data));
     }catch(error)
     {

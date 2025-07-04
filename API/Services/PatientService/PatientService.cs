@@ -46,6 +46,10 @@ public class PatientService : IPatientService
             Postcode = p.Postcode,
             Notes = p.Notes,
             Gp = p.Gp,
+            Active = p.Active,
+            OrderDate = p.OrderDate,
+            CollectionDate = p.CollectionDate,
+            OrderFrequency = p.OrderFrequency,
             Medications = p.patientMedication != null
                 ? p.patientMedication.Select(pm => new Medication
                 {

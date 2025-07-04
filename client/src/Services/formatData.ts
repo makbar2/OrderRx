@@ -4,23 +4,23 @@ import GpPractice from "@/Interfaces/GpPractice";
 import Medication from "@/Interfaces/Medication";
 function formatPatient(data:any): Patient
 {
+    console.log(data);
     const patient: Patient = {
         id: data.id,
         firstName : data.firstName, 
         surname : data.surname, 
         postcode : data.postcode,
         dob : data.dob,
-        email : data.email, 
-        phoneNumber : data.phoneNumber,
         address : data.address, 
         notes: data.notes,
         gp : formatGP(data.gp),
-        patientMedication : formatPatientMedications(data.patientMedication),
+        patientMedication : formatPatientMedications(data.medications),
         collectionDate : data.collectionDate, 
         orderDate : data.orderDate,
         orderFrequency : data.orderFrequency,
         active: data.active
     };
+    console.log(patient);
     return patient;
 } 
 
@@ -31,7 +31,9 @@ function formatGP(data:any): GpPractice | undefined
         const gp : GpPractice = {
             id : data.id,
             name : data.name,
-            address : data.address
+            address : data.address,
+            email : data.email,
+            phoneNumber : data.phoneNumber
         }
         return gp;
     }
@@ -50,8 +52,8 @@ function formatPatientMedications(data:any) : Medication[] | undefined
     if (data !== null) {
         data.forEach(i => {
             const medication: Medication = {
-                id: i.medication.id,
-                name: i.medication.name
+                id: i.id,
+                name: i.name
             };
             medications.push(medication);
         });
