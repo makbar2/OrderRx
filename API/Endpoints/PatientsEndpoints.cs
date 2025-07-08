@@ -109,7 +109,7 @@ public static class PatientEndpoints
                 */
                 var fetchedGP = await _gpService.GetById(patient.Gp.Id);
                 patient.Gp = fetchedGP;
-                Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(patient));
+
                 var newPatientMedication = new List<PatientMedication>();
                 if (patient.patientMedication != null)
                 {
@@ -127,11 +127,12 @@ public static class PatientEndpoints
                     }
                     patient.patientMedication = newPatientMedication;
                 }
-                await _patientService.Add(patient);
-                return Results.Created($"/patient/{patient.Id}", patient);
+                PatientDto returnedPatient = await _patientService.Add(patient);
+                return Results.Created($"/patient/{returnedPatient.Id}", returnedPatient);
             }
             catch (Exception error)
             {
+                Console.WriteLine(error);
                 return Results.BadRequest(new { message = error.Message });
             }
         }).RequireAuthorization();
@@ -140,7 +141,7 @@ public static class PatientEndpoints
         {
             try
             {
-                List<Patient> patients;
+                List<PatientDto> patients;
                 if (query.Length < 3)
                 {
                     throw new Exception("Please provide more than two characters");
