@@ -1,18 +1,18 @@
 
 public interface IPatientService
 {
-    Task<IEnumerable<Patient>> Get();
+    Task<IEnumerable<PatientDto>> Get();
     Task<PatientDto> GetById(int id);
-    Task<Patient> Add(Patient patient);
-    Task<List<Patient>> GetBySurname(string surname);
+    Task<PatientDto> Add(Patient patient);
+    Task<List<PatientDto>> GetBySurname(string surname);
         
-    Task<List<Patient>> GetByDob(DateTime dob);
+    Task<List<PatientDto>> GetByDob(DateTime dob);
 
-    Task<Patient> Update(Patient patient);
+    Task<PatientDto> Update(Patient patient);
 
-    Task<List<Patient>> getOrders(DateTime date);
+    Task<List<PatientDto>> getOrders(DateTime date);
 
-    Task <Patient> updateDate(Patient patient);//just increments the dates on the patient by the frequency
+    Task <PatientDto> updateDate(Patient patient);//just increments the dates on the patient by the frequency
 
     Task<List<PatientMedication>> GetMedications(int id);
 
