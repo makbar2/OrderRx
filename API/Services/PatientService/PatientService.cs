@@ -153,26 +153,43 @@ public class PatientService : IPatientService
 
 
 
-    public async Task<PatientDto> Update(Patient patient)
+    public async Task<PatientDto> Update(Patient updatedPatient)
     {
-        _context.Patients.Update(patient);
+
+        Patient? existingPatient = await _context.Patients.FindAsync(updatedPatient.Id);
+        if (existingPatient == null)
+        {
+            throw new Exception($"Patient not found with the id : {updatedPatient.Id}");
+        }
+        existingPatient.FirstName = updatedPatient.FirstName ?? existingPatient.FirstName;
+        existingPatient.Surname = updatedPatient.Surname ?? existingPatient.Surname;
+        existingPatient.Address = updatedPatient.Address ?? existingPatient.Address;
+        existingPatient.Postcode = updatedPatient.Postcode ?? existingPatient.Postcode;
+        existingPatient.Notes = updatedPatient.Notes ?? existingPatient.Notes;
+        if (updatedPatient.DOB != default) existingPatient.DOB = updatedPatient.DOB;
+        if (updatedPatient.GpPracticeId != 0) existingPatient.GpPracticeId = updatedPatient.GpPracticeId;
+        if (updatedPatient.CollectionDate.HasValue) existingPatient.CollectionDate = updatedPatient.CollectionDate;
+        if (updatedPatient.OrderDate.HasValue) existingPatient.OrderDate = updatedPatient.OrderDate;
+        if (updatedPatient.OrderFrequency.HasValue) existingPatient.OrderFrequency = updatedPatient.OrderFrequency;
+        if (updatedPatient.Active.HasValue) existingPatient.Active = updatedPatient.Active;
+        _context.Patients.Update(existingPatient);
         await _context.SaveChangesAsync();
         var pdto = new PatientDto
         {
-            Id = patient.Id,
-            FirstName = patient.FirstName,
-            Surname = patient.Surname,
-            DOB = patient.DOB,
-            Address = patient.Address,
-            Postcode = patient.Postcode,
-            Notes = patient.Notes,
-            Gp = patient.Gp,
-            Active = patient.Active,
-            OrderDate = patient.OrderDate,
-            CollectionDate = patient.CollectionDate,
-            OrderFrequency = patient.OrderFrequency,
-            Medications = patient.patientMedication != null
-                ? patient.patientMedication.Select(pm => new Medication
+            Id = existingPatient.Id,
+            FirstName = existingPatient.FirstName,
+            Surname = existingPatient.Surname,
+            DOB = existingPatient.DOB,
+            Address = existingPatient.Address,
+            Postcode = existingPatient.Postcode,
+            Notes = existingPatient.Notes,
+            Gp = existingPatient.Gp,
+            Active = existingPatient.Active,
+            OrderDate = existingPatient.OrderDate,
+            CollectionDate = existingPatient.CollectionDate,
+            OrderFrequency = existingPatient.OrderFrequency,
+            Medications = existingPatient.patientMedication != null
+                ? existingPatient.patientMedication.Select(pm => new Medication
                 {
                     Id = pm.MedicationId,
                     Name = pm.Medication.Name

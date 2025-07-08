@@ -11,6 +11,7 @@ public class PatientDto
     public bool? Active {get; set;}
     public DateTime? CollectionDate {get ;set;}
     public DateTime? OrderDate {get ;set;}
-    public GpPractice? Gp { get; set; } // assuming Gp.Name exists
+    public GpPractice? Gp { get; set; } 
+    public int GpPracticeId { get; set; }
     public List<Medication> Medications { get; set; }
 }

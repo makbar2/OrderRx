@@ -1,6 +1,7 @@
 
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore.Update.Internal;
 
 public static class PatientEndpoints
 {
@@ -166,77 +167,21 @@ public static class PatientEndpoints
 
         routes.MapPatch("/patients/{id}", async (int id, Patient updatedPatient, IPatientService _patientService, IMedicationService _medicationsService, IPatientMedicationService _patientMedicationService) =>
         {
-            // try
-            // {
-            //     var existingPatient = await _patientService.GetById(id);
-            //     if (existingPatient == null)
-            //     {
-            //         return Results.NotFound(new { message = "Patient not found." });
-            //     }
-            //     existingPatient.FirstName = updatedPatient.FirstName ?? existingPatient.FirstName;
-            //     existingPatient.Surname = updatedPatient.Surname ?? existingPatient.Surname;
-            //     existingPatient.Address = updatedPatient.Address ?? existingPatient.Address;
-            //     existingPatient.Postcode = updatedPatient.Postcode ?? existingPatient.Postcode;
-            //     existingPatient.Notes = updatedPatient.Notes ?? existingPatient.Notes;
-            //     if (updatedPatient.DOB != default) existingPatient.DOB = updatedPatient.DOB;
-            //     if (updatedPatient.GpPracticeId != 0) existingPatient.GpPracticeId = updatedPatient.GpPracticeId;
-            //     if (updatedPatient.CollectionDate.HasValue) existingPatient.CollectionDate = updatedPatient.CollectionDate;
-            //     if (updatedPatient.OrderDate.HasValue) existingPatient.OrderDate = updatedPatient.OrderDate;
-            //     if (updatedPatient.OrderFrequency.HasValue) existingPatient.OrderFrequency = updatedPatient.OrderFrequency;
-            //     if (updatedPatient.Active.HasValue) existingPatient.Active = updatedPatient.Active;
-            //     //check list of medications to see if if there is any changes
-            //     // loop through new list 
-            //     // if it pm doesnt exist in new  list remove it from the exiting patient
-            //     var newPatientMedication = new List<PatientMedication>();
-            //     if (existingPatient.patientMedication != null)
-            //     {
-            //         Dictionary<int, int> oldMedications = new Dictionary<int, int>();
-            //         //if found then set value to 1, if not 0, if key doesnt exist create new pm, if value doesnt exist remove pm
-            //         foreach (PatientMedication pm in existingPatient.patientMedication)
-            //         {
-            //             oldMedications.Add(pm.Medication.Id, 0);
-            //         }
-            //         foreach (PatientMedication pm in updatedPatient.patientMedication)
-            //         {
-            //             if (oldMedications.ContainsKey(pm.Medication.Id))
-            //             {
-            //                 oldMedications[pm.Medication.Id] = 1;
-            //             }
-            //             else
-            //             {
-            //                 var fetchedMedication = await _medicationsService.GetById(pm.Medication.Id);
-            //                 var newPm = new PatientMedication//creating a new relation row
-            //                 {
-            //                     Medication = fetchedMedication,
-            //                     MedicationId = fetchedMedication.Id,
-            //                     PatientId = existingPatient.Id,
-            //                     Patient = existingPatient
-            //                 };
-            //                 newPatientMedication.Add(newPm);
-            //             }
-            //         }
-            //         foreach (KeyValuePair<int, int> pair in oldMedications)//deletion
-            //         {
-            //             if (pair.Value == 0)
-            //             {
-            //                 await _patientMedicationService.DeleteByIds(existingPatient.Id, pair.Key);
-            //                 //cba passing in the patientmedication id, long to implement this is faster do implement
-            //             }
-            //         }
-            //     }
-            //     await _patientService.Update(existingPatient);
-            //     //i am going to assume that the orm is going to need to be specifically add and delete pm objects as 
-            //     //as it might think all the pms' are new
-            //     foreach (PatientMedication pm in newPatientMedication)
-            //     {
-            //         await _patientMedicationService.Add(pm);
-            //     }
-            //     return Results.Ok(existingPatient);
-            // }
-            // catch (Exception ex)
-            // {
-            //     return Results.BadRequest(new { message = ex.Message });
-            // }
+            try
+            {
+                var oldMedList = await _patientService.GetMedications(updatedPatient.Id);
+                await _patientService.Update(updatedPatient);
+                //get the id of the patient and then pass in the medications
+
+                await _patientMedicationService.UpdateRecord(updatedPatient.Id, updatedPatient.patientMedication,oldMedList);
+                var fetchedPatient = await _patientService.GetById(id);
+                return Results.Ok("something");
+         
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { message = ex.Message });
+            }
         }).RequireAuthorization();
 
         routes.MapPost("/patients/{id}/send", async (int id, IPatientService _patientService, IEmailService _emailService) =>
